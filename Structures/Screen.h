@@ -10,6 +10,7 @@ public:
 
     [[nodiscard]] Index get_w() const;
     [[nodiscard]] Index get_h() const;
+    [[nodiscard]] Array2<Index> shape() const;
 
     void set_image(const ArrayXX<Array3i>& image);
 private:

@@ -16,7 +16,7 @@ Renderer::Renderer(Screen &out) : screen(out) {
 
 void Renderer::draw_line(const Array2<Vector3d> &p, const Array3i &color) {
 
-    Array2<Vector2i> dp;
+    Array2<Vector2i> dp; // line ends coordinates on screen
     Array2d z {p[0].z(), p[1].z()};
 
     for (int i = 0; i < 2; ++i) {
@@ -24,34 +24,32 @@ void Renderer::draw_line(const Array2<Vector3d> &p, const Array3i &color) {
     }
 
     Array2i diff = (dp[0] - dp[1]).array().abs();
-    int dx = diff.x();
-    int dy = diff.y();
+
+    Array2<Index> shape {width, height};
+    Index iter_axis, sec_axis;
 
     if (diff.x() > diff.y()) {
-        if (dp[1].x() < dp[0].x()) {
-            std::swap(dp[0], dp[1]);
-            std::swap(z[0], z[1]);
-        }
-        for (int x = std::max(0, dp[0].x()); x <= std::min((int)width - 1, dp[1].x()); ++x) {
-            int y = (int)(dp[0].y() * (dp[1].x() - x)/(double)dx + dp[1].y() * (x - dp[0].x())/(double)dx);
-            double zp = (z[0] * (dp[1].x() - x)/(double)dx + z[1] * (x - dp[0].x())/(double)dx);
-            if (y >= 0 && y < height && (zp > -1 && zp < 1) && zp < z_buf(x, y)) {
-                image(x, y) = color;
-                z_buf(x, y) = zp;
-            }
-        }
+        iter_axis = 0;
+        sec_axis = 1;
     } else {
-        if (dp[1].y() < dp[0].y()) {
-            std::swap(dp[0], dp[1]);
-            std::swap(z[0], z[1]);
-        }
-        for (int y = std::max(0, dp[0].y()); y <= std::min((int)height - 1, dp[1].y()); ++y) {
-            int x = (int)(dp[0].x() * (dp[1].y() - y)/(double)dy + dp[1].x() * (y - dp[0].y())/(double)dy);
-            double zp = (z[0] * (dp[1].y() - y)/(double)dy + z[1] * (y - dp[0].y())/(double)dy);
-            if (x >= 0 && x < width && (zp > -1 && zp < 1) && zp < z_buf(x, y)) {
-                image(x, y) = color;
-                z_buf(x, y) = zp;
-            }
+        iter_axis = 1;
+        sec_axis = 0;
+    }
+    if (dp[1][iter_axis] < dp[0][iter_axis]) {
+        std::swap(dp[0], dp[1]);
+        std::swap(z[0], z[1]);
+    }
+
+    for (int it = std::max(0, dp[0][iter_axis]); it <= std::min((int)width - 1, dp[1][iter_axis]); ++it) {
+        int sec = (int)(dp[0][sec_axis] * (dp[1][iter_axis] - it) / (double)diff[iter_axis] + dp[1][sec_axis] * (it - dp[0][iter_axis]) / (double)diff[iter_axis]);
+        double zp = (z[0] * (dp[1][iter_axis] - it) / (double)diff[iter_axis] + z[1] * (it - dp[0][iter_axis]) / (double)diff[iter_axis]);
+
+        Array2i res;
+        res[iter_axis] = it;
+        res[sec_axis] = sec;
+        if (res[sec_axis] >= 0 && res[sec_axis] < shape[sec_axis] && (zp > -1 && zp < 1) && zp < z_buf(res.x(), res.y())) {
+            image(res.x(), res.y()) = color;
+            z_buf(res.x(), res.y()) = zp;
         }
     }
 }
