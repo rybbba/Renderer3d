@@ -26,3 +26,9 @@ void Triangle::rotateY(double angle) {
 void Triangle::rotateZ(double angle) {
     points.topLeftCorner(3,3) = AngleAxisd(angle, Vector3d::UnitZ()) * points.topLeftCorner(3,3);
 }
+
+void Triangle::rotate(Vector3d angle) {
+    rotateX(angle.x());
+    rotateY(angle.y());
+    rotateZ(angle.z());
+}
