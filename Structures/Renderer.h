@@ -6,7 +6,7 @@
 class Renderer {
 public:
     explicit Renderer(Screen &out);
-    Screen &render(std::vector<const Primitive *> objects, std::vector<Vector3d> positions);
+    Screen &render(std::vector<const Primitive *> objects, std::vector<Position> positions);
     void clear();
 
 private:

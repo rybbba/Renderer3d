@@ -4,6 +4,12 @@
 
 using namespace Eigen;
 
+struct Position {
+    Vector3d coordinates = {0, 0, 0};
+    Vector3d angle = {0, 0, 0};
+    Vector3d scale = {1, 1, 1};
+};
+
 struct Triangle;
 
 struct Primitive {

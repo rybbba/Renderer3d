@@ -7,8 +7,7 @@
 using namespace std;
 
 int main() {
-    Triangle a({0, -0.6, 0, 1}, {-0.5, 0.4, 0, 1}, {0.5, 0.4, 0, 1});
-    Triangle b({0, 0.6, 0, 1}, {-0.5, -0.4, 0, 1}, {0.5, -0.4, 0, 1});
+    Triangle a({0, 1, 0, 1}, {1, 0, 0, 1}, {0, 0, 1, 1});
 
     const size_t W = 1000;
     const size_t H = 1000;
@@ -38,13 +37,9 @@ int main() {
         renderer.clear();
 
         a.rotateY(2*timer.getElapsedTime().asSeconds());
-        b.rotateY(2*timer.getElapsedTime().asSeconds());
         timer.restart();
 
-        renderer.render({&a, &b, &a, &b}, {{-0.3, 0, -2}
-                                                            ,{-0.3, 0, -2}
-                                                            ,{0.3, 0, -2}
-                                                            ,{0.3, 0, -2}});
+        renderer.render({&a}, {{{0, 0, -3}, {0, 0, 0}, {0, 0, 0}}});
 
         sf::Uint8 pixels[4 * W * H];
 

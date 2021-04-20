@@ -61,7 +61,7 @@ void Renderer::draw_triangle(const Array3<Vector3d> &points, const Array3i &colo
 }
 
 
-Screen &Renderer::render(std::vector<const Primitive *> objects, std::vector<Vector3d> positions) {
+Screen &Renderer::render(std::vector<const Primitive *> objects, std::vector<Position> positions) {
     double n = 0.001, f = 100, l = -0.001, r = 0.001, b = -0.001, t = 0.001;
     Matrix<double, 4, 4> proj {
             {2*n/(r-l), 0, (r+l)/(r-l), 0},
@@ -73,7 +73,7 @@ Screen &Renderer::render(std::vector<const Primitive *> objects, std::vector<Vec
     for (int ind = 0; ind < objects.size(); ++ind) {
         std::vector<Triangle> triangles = objects[ind]->simplify();
         for (auto &triangle : triangles) {
-            triangle.translate(positions[ind]);
+            triangle.translate(positions[ind].coordinates);
             Matrix<double, 4, 3> global = triangle.points;
 
             global = proj * global;
