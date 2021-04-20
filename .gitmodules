@@ -1,0 +1,7 @@
+[submodule "lib/eigen"]
+	path = lib/eigen
+	url = https://gitlab.com/libeigen/eigen.git
+	branch = 3.4
+[submodule "lib/SFML"]
+	path = lib/SFML
+	url = https://github.com/SFML/SFML.git
