@@ -1,5 +1,6 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include <cmath>
 
 #include "Screen.h"
 #include "Renderer.h"
@@ -25,6 +26,7 @@ int main() {
     sf::Clock timer;
     sf::Clock fps_meter;
 
+    double r_angle = 0;
     while (window.isOpen())
     {
         sf::Event event{};
@@ -36,10 +38,15 @@ int main() {
 
         renderer.clear();
 
-        a.rotateY(2*timer.getElapsedTime().asSeconds());
+        r_angle = fmod(r_angle += 1.5*timer.getElapsedTime().asSeconds(), 2*M_PI);
         timer.restart();
 
-        renderer.render({&a}, {{{0, 0, -3}, {0, 0, 0}, {0, 0, 0}}});
+        renderer.render({&a, &a, &a, &a}, {
+                                         {{0, -0.5, -3}, {0, r_angle, 0}, {0, 0, 0}}
+                                        ,{{0, -0.5, -3}, {0, r_angle + M_PI/2, 0}, {0, 0, 0}}
+                                        ,{{0, -0.5, -3}, {0, r_angle + M_PI, 0}, {0, 0, 0}}
+                                        ,{{0, -0.5, -3}, {0, r_angle - M_PI/2, 0}, {0, 0, 0}}
+                                        });
 
         sf::Uint8 pixels[4 * W * H];
 
