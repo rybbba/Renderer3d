@@ -61,12 +61,11 @@ void Renderer::draw_triangle(const Array3<Vector3d> &points, const Array3i &colo
 }
 
 
-Screen &Renderer::render(std::vector<const Primitive *> objects, std::vector<Position> positions) {
-    double n = 0.001, f = 100, l = -0.001, r = 0.001, b = -0.001, t = 0.001;
+Screen &Renderer::render(const Camera &cam, std::vector<const Primitive *> objects, std::vector<Position> positions) {
     Matrix<double, 4, 4> proj {
-            {2*n/(r-l), 0, (r+l)/(r-l), 0},
-            {0, 2*n/(t-b), (t+b)/(t-b), 0},
-            {0, 0, -(f+n)/(f-n), -2*n*f/(f-n)},
+            {2*cam.n/(cam.r-cam.l), 0, (cam.r+cam.l)/(cam.r-cam.l), 0},
+            {0, 2*cam.n/(cam.t-cam.b), (cam.t+cam.b)/(cam.t-cam.b), 0},
+            {0, 0, -(cam.f+cam.n)/(cam.f-cam.n), -2*cam.n*cam.f/(cam.f-cam.n)},
             {0, 0, -1, 0}
     };
 

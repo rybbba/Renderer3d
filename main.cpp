@@ -3,6 +3,7 @@
 #include <cmath>
 
 #include "Screen.h"
+#include "Camera.h"
 #include "Renderer.h"
 
 using namespace std;
@@ -14,6 +15,7 @@ int main() {
     const size_t H = 1000;
 
     Screen res(W, H);
+    Camera camera {0.001, 100, -0.001, 0.001, -0.001, 0.001};
     Renderer renderer(res);
 
 
@@ -41,7 +43,7 @@ int main() {
         r_angle = fmod(r_angle += 1.5*timer.getElapsedTime().asSeconds(), 2*M_PI);
         timer.restart();
 
-        renderer.render({&a, &a, &a, &a}, {
+        renderer.render(camera, {&a, &a, &a, &a}, {
                                          {{0, -0.5, -3}, {0, r_angle, 0}, {1, 1, 1}}
                                         ,{{0, -0.5, -3}, {0, r_angle + M_PI/2, 0}, {1, 1, 1}}
                                         ,{{0, -0.5, -3}, {0, r_angle + M_PI, 0}, {1, 1, 1}}

@@ -2,11 +2,12 @@
 #include "Eigen/Core"
 #include "Screen.h"
 #include "Primitive.h"
+#include "Camera.h"
 
 class Renderer {
 public:
     explicit Renderer(Screen &out);
-    Screen &render(std::vector<const Primitive *> objects, std::vector<Position> positions);
+    Screen &render(const Camera &cam, std::vector<const Primitive *> objects, std::vector<Position> positions);
     void clear();
 
 private:
