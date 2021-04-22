@@ -27,8 +27,13 @@ void Triangle::rotateZ(double angle) {
     points.topLeftCorner(3,3) = AngleAxisd(angle, Vector3d::UnitZ()) * points.topLeftCorner(3,3);
 }
 
-void Triangle::rotate(Vector3d angle) {
+void Triangle::rotate(const Vector3d &angle) {
     rotateX(angle.x());
     rotateY(angle.y());
     rotateZ(angle.z());
+}
+
+void Triangle::scale(const Vector3d &coefficients) {
+    DiagonalMatrix<double, 4> m(coefficients.x(), coefficients.y(), coefficients.z(), 1);
+    points = m * points;
 }

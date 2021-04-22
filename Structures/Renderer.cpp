@@ -73,6 +73,7 @@ Screen &Renderer::render(std::vector<const Primitive *> objects, std::vector<Pos
     for (int ind = 0; ind < objects.size(); ++ind) {
         std::vector<Triangle> triangles = objects[ind]->simplify();
         for (auto &triangle : triangles) {
+            triangle.scale(positions[ind].scale);
             triangle.rotate(positions[ind].angle);
             triangle.translate(positions[ind].coordinates);
 

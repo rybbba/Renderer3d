@@ -14,10 +14,13 @@ struct Triangle;
 
 struct Primitive {
     virtual void translate(const Vector3d &pos) = 0;
+
     virtual void rotateX(double angle) = 0;
     virtual void rotateY(double angle) = 0;
     virtual void rotateZ(double angle) = 0;
-    virtual void rotate(Vector3d angle) = 0;
+    virtual void rotate(const Vector3d &angle) = 0;
+
+    virtual void scale(const Vector3d &coefficients) = 0;
 
     [[nodiscard]] virtual std::vector<Triangle> simplify() const = 0;
 };
@@ -32,7 +35,9 @@ struct Triangle : Primitive {
     void rotateZ(double angle) override;
 
     // Rotates triangle around X, Y and then Z axes.
-    void rotate(Vector3d angle) override;
+    void rotate(const Vector3d &angle) override;
+
+    void scale(const Vector3d &coefficients) override;
 
     [[nodiscard]] std::vector<Triangle> simplify() const override;
 
