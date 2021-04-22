@@ -20,7 +20,7 @@ void Renderer::draw_line(const Array2<Vector3d> &p, const Array3i &color) {
     Array2d z {p[0].z(), p[1].z()};
 
     for (int i = 0; i < 2; ++i) {
-        dp[i] = ((p[i].head(2) - Vector2d{-1, -1}).array() * Array2d{width, height} / 2).cast<int>();
+        dp[i] = p[i].head(2).cast<int>();
     }
 
     Array2i diff = (dp[0] - dp[1]).array().abs();
@@ -77,14 +77,20 @@ Screen &Renderer::render(std::vector<const Primitive *> objects, std::vector<Pos
             triangle.rotate(positions[ind].angle);
             triangle.translate(positions[ind].coordinates);
 
-            Matrix<double, 4, 3> global = triangle.points;
+            triangle.points = proj * triangle.points;
+            for (int i = 0; i < 3; ++i) {
+                triangle.points.col(i).head(3) /= triangle.points(3, i);
+            }
 
-            global = proj * global;
+            triangle.translate(Vector3d{1, 1, 0});
+            triangle.scale(Vector3d{((double)width)/2, ((double)height)/2, 1});
+
+            Matrix<double, 4, 3> &global = triangle.points;
 
             draw_triangle(
-                    { global.col(0).head(3) / global(3, 0)
-                            , global.col(1).head(3) / global(3, 1)
-                            , global.col(2).head(3) / global(3, 2)}
+                    { global.col(0).head(3)
+                            , global.col(1).head(3)
+                            , global.col(2).head(3)}
                     , {255, 255, 255});
         }
     }
