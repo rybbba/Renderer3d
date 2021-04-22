@@ -4,10 +4,11 @@
 
 using namespace Eigen;
 
-struct Position {
+struct Properties {
     Vector3d coordinates = {0, 0, 0};
     Vector3d angle = {0, 0, 0};
     Vector3d scale = {1, 1, 1};
+    Array3i color = {255, 255, 255};
 };
 
 struct Triangle;

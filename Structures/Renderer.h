@@ -7,7 +7,7 @@
 class Renderer {
 public:
     explicit Renderer(Screen &out);
-    Screen &render(const Camera &cam, std::vector<const Primitive *> objects, std::vector<Position> positions);
+    Screen &render(const Camera &cam, std::vector<const Primitive *> objects, std::vector<Properties> properties);
     void clear();
 
 private:

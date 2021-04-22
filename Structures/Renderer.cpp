@@ -61,7 +61,7 @@ void Renderer::draw_triangle(const Array3<Vector3d> &points, const Array3i &colo
 }
 
 
-Screen &Renderer::render(const Camera &cam, std::vector<const Primitive *> objects, std::vector<Position> positions) {
+Screen &Renderer::render(const Camera &cam, std::vector<const Primitive *> objects, std::vector<Properties> properties) {
     Matrix<double, 4, 4> proj {
             {2*cam.n/(cam.r-cam.l), 0, (cam.r+cam.l)/(cam.r-cam.l), 0},
             {0, 2*cam.n/(cam.t-cam.b), (cam.t+cam.b)/(cam.t-cam.b), 0},
@@ -72,9 +72,9 @@ Screen &Renderer::render(const Camera &cam, std::vector<const Primitive *> objec
     for (int ind = 0; ind < objects.size(); ++ind) {
         std::vector<Triangle> triangles = objects[ind]->simplify();
         for (auto &triangle : triangles) {
-            triangle.scale(positions[ind].scale);
-            triangle.rotate(positions[ind].angle);
-            triangle.translate(positions[ind].coordinates);
+            triangle.scale(properties[ind].scale);
+            triangle.rotate(properties[ind].angle);
+            triangle.translate(properties[ind].coordinates);
 
             triangle.points = proj * triangle.points;
             for (int i = 0; i < 3; ++i) {
@@ -90,7 +90,7 @@ Screen &Renderer::render(const Camera &cam, std::vector<const Primitive *> objec
                     { global.col(0).head(3)
                             , global.col(1).head(3)
                             , global.col(2).head(3)}
-                    , {255, 255, 255});
+                    , properties[ind].color);
         }
     }
 
