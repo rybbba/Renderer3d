@@ -54,10 +54,44 @@ void Renderer::draw_line(const Array2<Vector3d> &p, const Array3i &color) {
     }
 }
 
-void Renderer::draw_triangle(const Array3<Vector3d> &points, const Array3i &color) {
-    draw_line({points[0], points[1]}, color);
-    draw_line({points[1], points[2]}, color);
-    draw_line({points[2], points[0]}, color);
+double cross2(const Vector2d &a, const Vector2d &b) {
+    return a.x()*b.y() - a.y()*b.x();
+}
+
+void Renderer::draw_triangle(const Array3<Vector3d> &p, const Array3i &color) {
+    Array3<Vector2d> flat_p;
+    Array3d z;
+    for (int i = 0; i < 3; ++i) {
+        flat_p[i] = p[i].head(2);
+        z[i] = p[i].z();
+    }
+
+    for (int x = 0; x < width; ++x) {
+        for (int y = 0; y < height; ++y) {
+            Vector2d coords = {(double)x + 0.5, (double)y + 0.5};
+
+            double abc2 = cross2(flat_p[1]-flat_p[0], flat_p[2]-flat_p[0]);
+            double pbc2 = cross2(flat_p[1]-coords,flat_p[2]-coords);
+            double pca2 = cross2(flat_p[2]-coords,flat_p[0]-coords);
+            Array3d bari;
+            bari[0] = pbc2 / abc2;
+            bari[1] = pca2/ abc2;
+            bari[2] = 1 - bari[0] - bari[1];
+
+            double zp = 0;
+            bool bad = false;
+            for (int i = 0; i < 3; ++i) {
+                if (bari[i] < 0) {
+                    bad = true;
+                }
+                zp += z[i] * bari[i];
+            }
+            if (!bad && zp < z_buf(x, y)) {
+                image(x, y) = color;
+                z_buf(x, y) = zp;
+            }
+        }
+        }
 }
 
 
