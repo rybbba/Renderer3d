@@ -9,7 +9,7 @@
 using namespace std;
 
 int main() {
-    Triangle a({0, 1, 0, 1}, {1, 0, 0, 1}, {0, 0, 1, 1});
+    Triangle a({1, 0, 0, 1}, {0, 1, 0, 1}, {0, 0, 1, 1});
 
     const size_t W = 1000;
     const size_t H = 1000;

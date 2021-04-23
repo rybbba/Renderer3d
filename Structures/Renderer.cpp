@@ -26,11 +26,13 @@ void Renderer::draw_triangle(const Array3<Vector3f> &p, const Array3i &color) {
         z[i] = p[i].z();
     }
 
+    float abc2 = cross2(flat_p[1]-flat_p[0], flat_p[2]-flat_p[0]);
+    if (abc2 < 0) return;
+
     for (int x = 0; x < width; ++x) {
         for (int y = 0; y < height; ++y) {
             Vector2f coords = {(float)x + 0.5, (float)y + 0.5};
 
-            float abc2 = cross2(flat_p[1]-flat_p[0], flat_p[2]-flat_p[0]);
             float pbc2 = cross2(flat_p[1]-coords,flat_p[2]-coords);
             float pca2 = cross2(flat_p[2]-coords,flat_p[0]-coords);
             Array3d bari;
