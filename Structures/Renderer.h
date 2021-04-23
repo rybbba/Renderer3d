@@ -11,8 +11,7 @@ public:
     void clear();
 
 private:
-    void draw_line(const Array2<Vector3d> &p, const Array3i &color);
-    void draw_triangle(const Array3<Vector3d> &p, const Array3i &color);
+    void draw_triangle(const Array3<Vector3f> &p, const Array3i &color);
 
     Screen &screen;
 

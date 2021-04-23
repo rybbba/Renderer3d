@@ -14,53 +14,13 @@ Renderer::Renderer(Screen &out) : screen(out) {
 
 }
 
-void Renderer::draw_line(const Array2<Vector3d> &p, const Array3i &color) {
-
-    Array2<Vector2i> dp; // line ends coordinates on screen
-    Array2d z {p[0].z(), p[1].z()};
-
-    for (int i = 0; i < 2; ++i) {
-        dp[i] = p[i].head(2).cast<int>();
-    }
-
-    Array2i diff = (dp[0] - dp[1]).array().abs();
-
-    Array2<Index> shape {width, height};
-    Index iter_axis, sec_axis;
-
-    if (diff.x() > diff.y()) {
-        iter_axis = 0;
-        sec_axis = 1;
-    } else {
-        iter_axis = 1;
-        sec_axis = 0;
-    }
-    if (dp[1][iter_axis] < dp[0][iter_axis]) {
-        std::swap(dp[0], dp[1]);
-        std::swap(z[0], z[1]);
-    }
-
-    for (int it = std::max(0, dp[0][iter_axis]); it <= std::min((int)width - 1, dp[1][iter_axis]); ++it) {
-        int sec = (int)(dp[0][sec_axis] * (dp[1][iter_axis] - it) / (double)diff[iter_axis] + dp[1][sec_axis] * (it - dp[0][iter_axis]) / (double)diff[iter_axis]);
-        double zp = (z[0] * (dp[1][iter_axis] - it) / (double)diff[iter_axis] + z[1] * (it - dp[0][iter_axis]) / (double)diff[iter_axis]);
-
-        Array2i res;
-        res[iter_axis] = it;
-        res[sec_axis] = sec;
-        if (res[sec_axis] >= 0 && res[sec_axis] < shape[sec_axis] && (zp > -1 && zp < 1) && zp < z_buf(res.x(), res.y())) {
-            image(res.x(), res.y()) = color;
-            z_buf(res.x(), res.y()) = zp;
-        }
-    }
-}
-
-double cross2(const Vector2d &a, const Vector2d &b) {
+float cross2(const Vector2f &a, const Vector2f &b) {
     return a.x()*b.y() - a.y()*b.x();
 }
 
-void Renderer::draw_triangle(const Array3<Vector3d> &p, const Array3i &color) {
-    Array3<Vector2d> flat_p;
-    Array3d z;
+void Renderer::draw_triangle(const Array3<Vector3f> &p, const Array3i &color) {
+    Array3<Vector2f> flat_p;
+    Array3f z;
     for (int i = 0; i < 3; ++i) {
         flat_p[i] = p[i].head(2);
         z[i] = p[i].z();
@@ -68,17 +28,17 @@ void Renderer::draw_triangle(const Array3<Vector3d> &p, const Array3i &color) {
 
     for (int x = 0; x < width; ++x) {
         for (int y = 0; y < height; ++y) {
-            Vector2d coords = {(double)x + 0.5, (double)y + 0.5};
+            Vector2f coords = {(float)x + 0.5, (float)y + 0.5};
 
-            double abc2 = cross2(flat_p[1]-flat_p[0], flat_p[2]-flat_p[0]);
-            double pbc2 = cross2(flat_p[1]-coords,flat_p[2]-coords);
-            double pca2 = cross2(flat_p[2]-coords,flat_p[0]-coords);
+            float abc2 = cross2(flat_p[1]-flat_p[0], flat_p[2]-flat_p[0]);
+            float pbc2 = cross2(flat_p[1]-coords,flat_p[2]-coords);
+            float pca2 = cross2(flat_p[2]-coords,flat_p[0]-coords);
             Array3d bari;
             bari[0] = pbc2 / abc2;
             bari[1] = pca2/ abc2;
             bari[2] = 1 - bari[0] - bari[1];
 
-            double zp = 0;
+            float zp = 0;
             bool bad = false;
             for (int i = 0; i < 3; ++i) {
                 if (bari[i] < 0) {
@@ -96,7 +56,7 @@ void Renderer::draw_triangle(const Array3<Vector3d> &p, const Array3i &color) {
 
 
 Screen &Renderer::render(const Camera &cam, std::vector<const Primitive *> objects, std::vector<Properties> properties) {
-    Matrix<double, 4, 4> proj {
+    Matrix<float, 4, 4> proj {
             {2*cam.n/(cam.r-cam.l), 0, (cam.r+cam.l)/(cam.r-cam.l), 0},
             {0, 2*cam.n/(cam.t-cam.b), (cam.t+cam.b)/(cam.t-cam.b), 0},
             {0, 0, -(cam.f+cam.n)/(cam.f-cam.n), -2*cam.n*cam.f/(cam.f-cam.n)},
@@ -115,10 +75,10 @@ Screen &Renderer::render(const Camera &cam, std::vector<const Primitive *> objec
                 triangle.points.col(i).head(3) /= triangle.points(3, i);
             }
 
-            triangle.translate(Vector3d{1, 1, 0});
-            triangle.scale(Vector3d{((double)width)/2, ((double)height)/2, 1});
+            triangle.translate(Vector3f{1, 1, 0});
+            triangle.scale(Vector3f{((float)width)/2, ((float)height)/2, 1});
 
-            Matrix<double, 4, 3> &global = triangle.points;
+            Matrix<float, 4, 3> &global = triangle.points;
 
             draw_triangle(
                     { global.col(0).head(3)

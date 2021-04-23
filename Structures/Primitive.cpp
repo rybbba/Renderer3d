@@ -1,7 +1,7 @@
 #include "Primitive.h"
 
 
-Triangle::Triangle(const Vector4d &p1, const Vector4d &p2, const Vector4d &p3){
+Triangle::Triangle(const Vector4f &p1, const Vector4f &p2, const Vector4f &p3){
     points.col(0) = p1;
     points.col(1) = p2;
     points.col(2) = p3;
@@ -11,29 +11,29 @@ std::vector<Triangle> Triangle::simplify() const {
     return {*this};
 }
 
-void Triangle::translate(const Vector3d &pos) {
+void Triangle::translate(const Vector3f &pos) {
     for (auto col : points.colwise()) {
         col.head(3) += pos;
     }
 }
 
-void Triangle::rotateX(double angle) {
-    points.topLeftCorner(3,3) = AngleAxisd(angle, Vector3d::UnitX()) * points.topLeftCorner(3,3);
+void Triangle::rotateX(float angle) {
+    points.topLeftCorner(3,3) = AngleAxisf(angle, Vector3f::UnitX()) * points.topLeftCorner(3,3);
 }
-void Triangle::rotateY(double angle) {
-    points.topLeftCorner(3,3) = AngleAxisd(angle, Vector3d::UnitY()) * points.topLeftCorner(3,3);
+void Triangle::rotateY(float angle) {
+    points.topLeftCorner(3,3) = AngleAxisf(angle, Vector3f::UnitY()) * points.topLeftCorner(3,3);
 }
-void Triangle::rotateZ(double angle) {
-    points.topLeftCorner(3,3) = AngleAxisd(angle, Vector3d::UnitZ()) * points.topLeftCorner(3,3);
+void Triangle::rotateZ(float angle) {
+    points.topLeftCorner(3,3) = AngleAxisf(angle, Vector3f::UnitZ()) * points.topLeftCorner(3,3);
 }
 
-void Triangle::rotate(const Vector3d &angle) {
+void Triangle::rotate(const Vector3f &angle) {
     rotateX(angle.x());
     rotateY(angle.y());
     rotateZ(angle.z());
 }
 
-void Triangle::scale(const Vector3d &coefficients) {
-    DiagonalMatrix<double, 4> m(coefficients.x(), coefficients.y(), coefficients.z(), 1);
+void Triangle::scale(const Vector3f &coefficients) {
+    DiagonalMatrix<float, 4> m(coefficients.x(), coefficients.y(), coefficients.z(), 1);
     points = m * points;
 }

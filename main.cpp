@@ -28,7 +28,7 @@ int main() {
     sf::Clock timer;
     sf::Clock fps_meter;
 
-    double r_angle = 0;
+    float r_angle = 0;
     while (window.isOpen())
     {
         sf::Event event{};

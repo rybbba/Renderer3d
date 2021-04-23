@@ -5,43 +5,43 @@
 using namespace Eigen;
 
 struct Properties {
-    Vector3d coordinates = {0, 0, 0};
-    Vector3d angle = {0, 0, 0};
-    Vector3d scale = {1, 1, 1};
+    Vector3f coordinates = {0, 0, 0};
+    Vector3f angle = {0, 0, 0};
+    Vector3f scale = {1, 1, 1};
     Array3i color = {255, 255, 255};
 };
 
 struct Triangle;
 
 struct Primitive {
-    virtual void translate(const Vector3d &pos) = 0;
+    virtual void translate(const Vector3f &pos) = 0;
 
-    virtual void rotateX(double angle) = 0;
-    virtual void rotateY(double angle) = 0;
-    virtual void rotateZ(double angle) = 0;
-    virtual void rotate(const Vector3d &angle) = 0;
+    virtual void rotateX(float angle) = 0;
+    virtual void rotateY(float angle) = 0;
+    virtual void rotateZ(float angle) = 0;
+    virtual void rotate(const Vector3f &angle) = 0;
 
-    virtual void scale(const Vector3d &coefficients) = 0;
+    virtual void scale(const Vector3f &coefficients) = 0;
 
     [[nodiscard]] virtual std::vector<Triangle> simplify() const = 0;
 };
 
 
 struct Triangle : Primitive {
-    Triangle(const Vector4d &p1, const Vector4d &p2, const Vector4d &p3);
+    Triangle(const Vector4f &p1, const Vector4f &p2, const Vector4f &p3);
 
-    void translate(const Vector3d &pos) override;
-    void rotateX(double angle) override;
-    void rotateY(double angle) override;
-    void rotateZ(double angle) override;
+    void translate(const Vector3f &pos) override;
+    void rotateX(float angle) override;
+    void rotateY(float angle) override;
+    void rotateZ(float angle) override;
 
     // Rotates triangle around X, Y and then Z axes.
-    void rotate(const Vector3d &angle) override;
+    void rotate(const Vector3f &angle) override;
 
-    void scale(const Vector3d &coefficients) override;
+    void scale(const Vector3f &coefficients) override;
 
     [[nodiscard]] std::vector<Triangle> simplify() const override;
 
-    Matrix<double, 4, 3> points;
+    Matrix<float, 4, 3> points;
 };
 
