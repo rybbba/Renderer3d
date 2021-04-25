@@ -19,6 +19,6 @@ Array2<Index> Screen::shape() const {
     return {width, height};
 }
 
-void Screen::set_image(const ArrayXX<Array3i>& image) {
+void Screen::setImage(const ArrayXX<Array3i>& image) {
     canvas = image;
 }

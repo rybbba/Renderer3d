@@ -92,7 +92,7 @@ Screen &Renderer::render(const Camera &cam, const Scene &scene) {
         }
     }
 
-    screen.set_image(image);
+    screen.setImage(image);
 
     return screen;
 }
