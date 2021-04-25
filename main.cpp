@@ -4,6 +4,7 @@
 
 #include "Screen.h"
 #include "Camera.h"
+#include "Scene.h"
 #include "Renderer.h"
 
 using namespace std;
@@ -16,6 +17,7 @@ int main() {
 
     Screen res(W, H);
     Camera camera {0.001, 100, -0.001, 0.001, -0.001, 0.001};
+    Scene scene;
     Renderer renderer(res);
 
 
@@ -40,15 +42,21 @@ int main() {
 
         renderer.clear();
 
-        r_angle = fmod(r_angle += 1.5*timer.getElapsedTime().asSeconds(), 2*M_PI);
+        r_angle = fmodf(r_angle + 1.5*timer.getElapsedTime().asSeconds(), 2*M_PI);
         timer.restart();
 
-        renderer.render(camera, {&a, &a, &a, &a}, {
-                         {{0, -0.5, -3}, {0, r_angle, 0}, {1, 1, 1}, {255, 0, 0}}
-                        ,{{0, -0.5, -3}, {0, r_angle + M_PI/2, 0}, {1, 1, 1}, {0, 255, 0}}
-                        ,{{0, -0.5, -3}, {0, r_angle + M_PI, 0}, {1, 1, 1}, {0, 0, 255}}
-                        ,{{0, -0.5, -3}, {0, r_angle - M_PI/2, 0}, {1, 1, 1}, {255, 255, 255}}
-                        });
+        scene.setScene({&a, &a, &a, &a, &a, &a, &a, &a}, {
+                 {{0, -0.5, -3}, {0, r_angle, 0}, {1, 1, 1}, {255, 0, 0}}
+                ,{{0, -0.5, -3}, {0, r_angle + M_PI/2, 0}, {1, 1, 1}, {0, 255, 0}}
+                ,{{0, -0.5, -3}, {0, r_angle + M_PI, 0}, {1, 1, 1}, {0, 0, 255}}
+                ,{{0, -0.5, -3}, {0, r_angle - M_PI/2, 0}, {1, 1, 1}, {255, 255, 255}}
+                ,{{0, -0.5, -3}, {M_PI, r_angle, 0}, {1, 1, 1}, {255, 0, 0}}
+                ,{{0, -0.5, -3}, {M_PI, r_angle + M_PI/2, 0}, {1, 1, 1}, {0, 255, 0}}
+                ,{{0, -0.5, -3}, {M_PI, r_angle + M_PI, 0}, {1, 1, 1}, {0, 0, 255}}
+                ,{{0, -0.5, -3}, {M_PI, r_angle - M_PI/2, 0}, {1, 1, 1}, {255, 255, 255}}
+        });
+
+        renderer.render(camera, scene);
 
         sf::Uint8 pixels[4 * W * H];
 

@@ -11,6 +11,7 @@ include_directories(Structures)
 add_executable(Renderer3d main.cpp
         Structures/Primitive.cpp
         Structures/Screen.cpp
-        Structures/Renderer.cpp)
+        Structures/Renderer.cpp
+        Structures/Scene.cpp)
 
 target_link_libraries(Renderer3d sfml-graphics)
