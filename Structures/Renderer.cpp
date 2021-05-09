@@ -57,9 +57,10 @@ void Renderer::draw_triangle(const Array3<Vector3f> &p, const Array3i &color) {
 }
 
 
-Screen &Renderer::render(const Camera &cam, const Scene &scene) {
+Screen &Renderer::render(const Scene &scene) {
     const auto &objects = scene.getObjects();
     const auto &properties = scene.getProperties();
+    const auto &cam = scene.getCamera();
     Matrix<float, 4, 4> proj {
             {2*cam.n/(cam.r-cam.l), 0, (cam.r+cam.l)/(cam.r-cam.l), 0},
             {0, 2*cam.n/(cam.t-cam.b), (cam.t+cam.b)/(cam.t-cam.b), 0},

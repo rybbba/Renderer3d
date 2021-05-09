@@ -16,8 +16,12 @@ int main() {
     const size_t H = 1000;
 
     Screen res(W, H);
-    Camera camera {0.001, 100, -0.001, 0.001, -0.001, 0.001};
+
     Scene scene;
+
+    Camera camera {0.001, 100, -0.001, 0.001, -0.001, 0.001};
+    scene.setCamera(camera);
+
     Renderer renderer(res);
 
 
@@ -56,7 +60,7 @@ int main() {
                 ,{{0, -0.5, -3}, {M_PI, r_angle - M_PI/2, 0}, {1, 1, 1}, {255, 255, 255}}
         });
 
-        renderer.render(camera, scene);
+        renderer.render(scene);
 
         sf::Uint8 pixels[4 * W * H];
 

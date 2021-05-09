@@ -8,7 +8,7 @@
 class Renderer {
 public:
     explicit Renderer(Screen &out);
-    Screen &render(const Camera &cam, const Scene &scene);
+    Screen &render(const Scene &scene);
     void clear();
 
 private:

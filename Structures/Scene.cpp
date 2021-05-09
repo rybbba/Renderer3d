@@ -5,10 +5,18 @@ void Scene::setScene(const std::vector<const Primitive *> &obj, const std::vecto
         properties = prop;
 }
 
+void Scene::setCamera(const Camera &cam) {
+    camera = cam;
+}
+
 const std::vector<const Primitive *> & Scene::getObjects() const {
     return objects;
 }
 
 const std::vector<Properties> &Scene::getProperties() const  {
     return properties;
+}
+
+const Camera &Scene::getCamera() const {
+    return camera;
 }
