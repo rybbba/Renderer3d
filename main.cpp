@@ -19,8 +19,7 @@ int main() {
 
     Scene scene;
 
-    Camera camera {0.001, 100, -0.001, 0.001, -0.001, 0.001};
-    scene.setCamera(camera);
+    Camera camera {0.001, 100, -0.001, 0.001, -0.001, 0.001, {0, 0, 0}, {0, 0, 0}};
 
     Renderer renderer(res);
 
@@ -59,6 +58,9 @@ int main() {
                 ,{{0, -0.5, -3}, {M_PI, r_angle + M_PI, 0}, {1, 1, 1}, {0, 0, 255}}
                 ,{{0, -0.5, -3}, {M_PI, r_angle - M_PI/2, 0}, {1, 1, 1}, {255, 255, 255}}
         });
+
+        camera.position.z() = r_angle;
+        scene.setCamera(camera);
 
         renderer.render(scene);
 

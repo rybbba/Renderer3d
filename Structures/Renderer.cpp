@@ -48,7 +48,7 @@ void Renderer::draw_triangle(const Array3<Vector3f> &p, const Array3i &color) {
                 }
                 zp += z[i] * bari[i];
             }
-            if (!bad && zp < z_buf(x, y)) {
+            if (zp <= 1 && zp >= -1 && !bad && zp < z_buf(x, y)) {
                 image(x, y) = color;
                 z_buf(x, y) = zp;
             }
@@ -74,6 +74,11 @@ Screen &Renderer::render(const Scene &scene) {
             triangle.scale(properties[ind].scale);
             triangle.rotate(properties[ind].angle);
             triangle.translate(properties[ind].coordinates);
+
+            triangle.translate(-cam.position);
+            triangle.rotateZ(-cam.angle.z());
+            triangle.rotateY(-cam.angle.y());
+            triangle.rotateX(-cam.angle.x());
 
             triangle.points = proj * triangle.points;
             for (int i = 0; i < 3; ++i) {

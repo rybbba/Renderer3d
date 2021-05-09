@@ -16,6 +16,7 @@ public:
 
 private:
     Camera camera;
+    Properties camera_pos;
     std::vector<const Primitive *> objects;
     std::vector<Properties> properties;
 
