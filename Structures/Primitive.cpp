@@ -33,6 +33,10 @@ void Triangle::rotate(const Vector3f &angle) {
     rotateZ(angle.z());
 }
 
+void Triangle::transform(const Matrix4f &m) {
+    points = m * points;
+}
+
 void Triangle::scale(const Vector3f &coefficients) {
     DiagonalMatrix<float, 4> m(coefficients.x(), coefficients.y(), coefficients.z(), 1);
     points = m * points;
