@@ -19,7 +19,7 @@ int main() {
 
     Scene scene;
 
-    Camera camera {0.001, 100, -0.001, 0.001, -0.001, 0.001, {0, 0, 0}, {0, 0, 0}};
+    Camera camera {0.001, 100, -0.001, 0.001, -0.001, 0.001, {0, 0, 3}, {0, 0, 0}};
 
     Renderer renderer(res);
 
@@ -30,10 +30,13 @@ int main() {
     texture.create(W, H);
     sf::Sprite sprite;
 
-    sf::Clock timer;
+    // sf::Clock timer;
     sf::Clock fps_meter;
 
-    float r_angle = 0;
+    float step = 0.03;
+    float x_angle = 0, y_angle = 0;
+
+    // float r_angle = 0;
     while (window.isOpen())
     {
         sf::Event event{};
@@ -42,24 +45,74 @@ int main() {
             if (event.type == sf::Event::Closed)
                 window.close();
         }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+        {
+            camera.position.x() -= step;
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+        {
+            camera.position.x() += step;
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+        {
+            camera.position.y() += step;
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+        {
+            camera.position.y() -= step;
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::PageUp))
+        {
+            camera.position.z() -= step;
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::PageDown))
+        {
+            camera.position.z() += step;
+        }
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad4))
+        {
+           camera.angle.y() = fmodf(camera.angle.y() + step,  2*M_PI);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad6))
+        {
+            camera.angle.y() = fmodf(camera.angle.y() - step,  2*M_PI);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad8))
+        {
+            camera.angle.x() = fmodf(camera.angle.x() + step,  2*M_PI);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad2))
+        {
+            camera.angle.x() = fmodf(camera.angle.x() - step,  2*M_PI);
+        }
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+        {
+            y_angle = fmodf(y_angle - step,  2*M_PI);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+        {
+            y_angle = fmodf(y_angle + step,  2*M_PI);
+        }
 
         renderer.clear();
 
-        r_angle = fmodf(r_angle + 1.5*timer.getElapsedTime().asSeconds(), 2*M_PI);
-        timer.restart();
+        // r_angle = fmodf(r_angle + 1.5*timer.getElapsedTime().asSeconds(), 2*M_PI);
+        // timer.restart();
 
         scene.setScene({&a, &a, &a, &a, &a, &a, &a, &a}, {
-                 {{0, -0.5, -3}, {0, r_angle, 0}, {1, 1, 1}, {255, 0, 0}}
-                ,{{0, -0.5, -3}, {0, r_angle + M_PI/2, 0}, {1, 1, 1}, {0, 255, 0}}
-                ,{{0, -0.5, -3}, {0, r_angle + M_PI, 0}, {1, 1, 1}, {0, 0, 255}}
-                ,{{0, -0.5, -3}, {0, r_angle - M_PI/2, 0}, {1, 1, 1}, {255, 255, 255}}
-                ,{{0, -0.5, -3}, {M_PI, r_angle, 0}, {1, 1, 1}, {255, 0, 0}}
-                ,{{0, -0.5, -3}, {M_PI, r_angle + M_PI/2, 0}, {1, 1, 1}, {0, 255, 0}}
-                ,{{0, -0.5, -3}, {M_PI, r_angle + M_PI, 0}, {1, 1, 1}, {0, 0, 255}}
-                ,{{0, -0.5, -3}, {M_PI, r_angle - M_PI/2, 0}, {1, 1, 1}, {255, 255, 255}}
+                 {{0, -0.5, 0}, {0, y_angle, 0}, {1, 1, 1}, {255, 0, 0}}
+                ,{{0, -0.5, 0}, {0, y_angle + M_PI/2, 0}, {1, 1, 1}, {0, 255, 0}}
+                ,{{0, -0.5, 0}, {0, y_angle + M_PI, 0}, {1, 1, 1}, {0, 0, 255}}
+                ,{{0, -0.5, 0}, {0, y_angle - M_PI/2, 0}, {1, 1, 1}, {255, 255, 255}}
+                ,{{0, -0.5, 0}, {M_PI, y_angle, 0}, {1, 1, 1}, {255, 0, 0}}
+                ,{{0, -0.5, 0}, {M_PI, y_angle + M_PI/2, 0}, {1, 1, 1}, {0, 255, 0}}
+                ,{{0, -0.5, 0}, {M_PI, y_angle + M_PI, 0}, {1, 1, 1}, {0, 0, 255}}
+                ,{{0, -0.5, 0}, {M_PI, y_angle - M_PI/2, 0}, {1, 1, 1}, {255, 255, 255}}
         });
 
-        camera.position.z() = r_angle;
+        // camera.position.z() = 3 + r_angle;
         scene.setCamera(camera);
 
         renderer.render(scene);
