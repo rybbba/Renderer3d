@@ -56,6 +56,52 @@ void Renderer::draw_triangle(const Array3<Vector3f> &p, const Array3i &color) {
         }
 }
 
+Vector4f inter_z(Vector4f now, Vector4f next, float z) {
+    if ((now.z() < z && next.z() > z) || (now.z() > z && next.z() < z)) {
+        Vector4f v = next-now;
+        v = now + v * (z-now.z()) / v.z();
+        return v;
+    }
+    return {0, 0, 0, 0};
+}
+
+std::vector<Triangle> clip_z(const Triangle &triangle, float near_z, float far_z) {
+
+    std::vector<Vector4f> points;
+
+    for (int i = 0; i < 3; ++i) {
+        Vector4f now = triangle.points.col(i);
+        Vector4f next = triangle.points.col((i+1) % 3);
+
+        if (near_z > now.z() && now.z() > far_z) {
+            points.emplace_back(now);
+        }
+
+        float fz, sz;
+        if (abs(near_z - now.z()) < abs(far_z - now.z())) {
+            fz = near_z; sz = far_z;
+        } else {
+            fz = far_z; sz = near_z;
+        }
+
+        auto v = std::move(inter_z(now, next, fz));
+        if (v.w() == 1) {
+            points.emplace_back(std::move(v));
+        }
+        v = std::move(inter_z(now, next, sz));
+        if (v.w() == 1) {
+            points.emplace_back(std::move(v));
+        }
+    }
+    size_t p_size = points.size();
+
+    std::vector<Triangle> ans;
+    for (size_t i = 0; i+1 < p_size; i+= 2) {
+        ans.emplace_back(points[i], points[i+1], points[(i+2) % p_size]);
+    }
+
+    return ans;
+}
 
 Screen &Renderer::render(const Scene &scene) {
     const auto &objects = scene.getObjects();
@@ -79,22 +125,24 @@ Screen &Renderer::render(const Scene &scene) {
             triangle.rotateZ(-cam.angle.z());
             triangle.rotateY(-cam.angle.y());
             triangle.rotateX(-cam.angle.x());
+            
+            for (auto &sub_triangle : clip_z(triangle, -cam.n, -cam.f)) {
+                sub_triangle.points = proj * sub_triangle.points;
+                for (int i = 0; i < 3; ++i) {
+                    sub_triangle.points.col(i).head(3) /= sub_triangle.points(3, i);
+                }
 
-            triangle.points = proj * triangle.points;
-            for (int i = 0; i < 3; ++i) {
-                triangle.points.col(i).head(3) /= triangle.points(3, i);
+                sub_triangle.translate(Vector3f{1, 1, 0});
+                sub_triangle.scale(Vector3f{((float)width)/2, ((float)height)/2, 1});
+
+                Matrix<float, 4, 3> &global = sub_triangle.points;
+
+                draw_triangle(
+                        { global.col(0).head(3)
+                                , global.col(1).head(3)
+                                , global.col(2).head(3)}
+                        , properties[ind].color);
             }
-
-            triangle.translate(Vector3f{1, 1, 0});
-            triangle.scale(Vector3f{((float)width)/2, ((float)height)/2, 1});
-
-            Matrix<float, 4, 3> &global = triangle.points;
-
-            draw_triangle(
-                    { global.col(0).head(3)
-                            , global.col(1).head(3)
-                            , global.col(2).head(3)}
-                    , properties[ind].color);
         }
     }
 
