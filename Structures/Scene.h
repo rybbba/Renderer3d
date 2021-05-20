@@ -3,6 +3,8 @@
 #include "Primitive.h"
 #include "Camera.h"
 
+namespace Renderer3d {
+
 class Scene {
 public:
     Scene() = default;
@@ -21,3 +23,5 @@ private:
     std::vector<Properties> properties;
 
 };
+
+}  // namespace Renderer3d

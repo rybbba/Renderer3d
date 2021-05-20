@@ -8,6 +8,7 @@
 #include "Renderer.h"
 
 using namespace std;
+using namespace Renderer3d;
 
 int main() {
     Triangle a({1, 0, 0, 1}, {0, 1, 0, 1}, {0, 0, 1, 1});

@@ -5,6 +5,8 @@
 #include "Camera.h"
 #include "Scene.h"
 
+namespace Renderer3d {
+
 class Renderer {
 public:
     explicit Renderer(Screen &out);
@@ -20,3 +22,5 @@ private:
     ArrayXX<Array3i> image;
     ArrayXXd z_buf;
 };
+
+}  // namespace Renderer3d

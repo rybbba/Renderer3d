@@ -1,5 +1,6 @@
 #include "Primitive.h"
 
+namespace Renderer3d {
 
 Triangle::Triangle(const Vector4f &p1, const Vector4f &p2, const Vector4f &p3){
     points.col(0) = p1;
@@ -41,3 +42,5 @@ void Triangle::scale(const Vector3f &coefficients) {
     DiagonalMatrix<float, 4> m(coefficients.x(), coefficients.y(), coefficients.z(), 1);
     points = m * points;
 }
+
+}  // namespace Renderer3d

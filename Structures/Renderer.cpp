@@ -1,5 +1,7 @@
 #include "Renderer.h"
 
+namespace Renderer3d {
+
 void Renderer::clear() {
     image.setConstant(Array3i::Zero());
     z_buf.setConstant(2);
@@ -150,3 +152,5 @@ Screen &Renderer::render(const Scene &scene) {
 
     return screen;
 }
+
+}  // namespace Renderer3d

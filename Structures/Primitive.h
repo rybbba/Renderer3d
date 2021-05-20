@@ -4,6 +4,8 @@
 
 using namespace Eigen;
 
+namespace Renderer3d {
+
 struct Properties {
     Vector3f coordinates = {0, 0, 0};
     Vector3f angle = {0, 0, 0};
@@ -49,3 +51,4 @@ struct Triangle : Primitive {
     Matrix<float, 4, 3> points;
 };
 
+}  // namespace Renderer3d

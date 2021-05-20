@@ -1,6 +1,8 @@
 #pragma once
 #include "Eigen/Core"
 
+namespace Renderer3d {
+
 struct Camera {
     float n, f; // near and far planes distance
     float l, r; // near plane left and right edges coordinates
@@ -9,3 +11,5 @@ struct Camera {
     Vector3f position = {0, 0, 0};
     Vector3f angle = {0, 0, 0};
 };
+
+}  // namespace Renderer3d
