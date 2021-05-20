@@ -3,19 +3,19 @@
 namespace Renderer3d {
 
 void Scene::setScene(const std::vector<const Primitive *> &obj, const std::vector<Properties> &prop) {
-        objects = obj;
-        properties = prop;
+    objects = obj;
+    properties = prop;
 }
 
 void Scene::setCamera(const Camera &cam) {
     camera = cam;
 }
 
-const std::vector<const Primitive *> & Scene::getObjects() const {
+const std::vector<const Primitive *> &Scene::getObjects() const {
     return objects;
 }
 
-const std::vector<Properties> &Scene::getProperties() const  {
+const std::vector<Properties> &Scene::getProperties() const {
     return properties;
 }
 

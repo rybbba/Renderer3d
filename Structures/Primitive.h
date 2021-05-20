@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Eigen/Core"
 #include "Eigen/Geometry"
 
@@ -19,8 +20,11 @@ struct Primitive {
     virtual void translate(const Vector3f &pos) = 0;
 
     virtual void rotateX(float angle) = 0;
+
     virtual void rotateY(float angle) = 0;
+
     virtual void rotateZ(float angle) = 0;
+
     virtual void rotate(const Vector3f &angle) = 0;
 
     virtual void transform(const Matrix4f &m) = 0;
@@ -35,8 +39,11 @@ struct Triangle : Primitive {
     Triangle(const Vector4f &p1, const Vector4f &p2, const Vector4f &p3);
 
     void translate(const Vector3f &pos) override;
+
     void rotateX(float angle) override;
+
     void rotateY(float angle) override;
+
     void rotateZ(float angle) override;
 
     // Rotates triangle around X, Y and then Z axes.

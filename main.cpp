@@ -20,7 +20,7 @@ int main() {
 
     Scene scene;
 
-    Camera camera {0.001, 100, -0.001, 0.001, -0.001, 0.001, {0, 0, 3}, {0, 0, 0}};
+    Camera camera{0.001, 100, -0.001, 0.001, -0.001, 0.001, {0, 0, 3}, {0, 0, 0}};
 
     Renderer renderer(res);
 
@@ -38,63 +38,49 @@ int main() {
     float x_angle = 0, y_angle = 0;
 
     // float r_angle = 0;
-    while (window.isOpen())
-    {
+    while (window.isOpen()) {
         sf::Event event{};
-        while (window.pollEvent(event))
-        {
+        while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 window.close();
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-        {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
             camera.position.x() -= step;
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-        {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
             camera.position.x() += step;
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-        {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
             camera.position.y() += step;
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-        {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
             camera.position.y() -= step;
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::PageUp))
-        {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::PageUp)) {
             camera.position.z() -= step;
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::PageDown))
-        {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::PageDown)) {
             camera.position.z() += step;
         }
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad4))
-        {
-           camera.angle.y() = fmodf(camera.angle.y() + step,  2*M_PI);
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad4)) {
+            camera.angle.y() = fmodf(camera.angle.y() + step, 2 * M_PI);
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad6))
-        {
-            camera.angle.y() = fmodf(camera.angle.y() - step,  2*M_PI);
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad6)) {
+            camera.angle.y() = fmodf(camera.angle.y() - step, 2 * M_PI);
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad8))
-        {
-            camera.angle.x() = fmodf(camera.angle.x() + step,  2*M_PI);
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad8)) {
+            camera.angle.x() = fmodf(camera.angle.x() + step, 2 * M_PI);
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad2))
-        {
-            camera.angle.x() = fmodf(camera.angle.x() - step,  2*M_PI);
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad2)) {
+            camera.angle.x() = fmodf(camera.angle.x() - step, 2 * M_PI);
         }
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-        {
-            y_angle = fmodf(y_angle - step,  2*M_PI);
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+            y_angle = fmodf(y_angle - step, 2 * M_PI);
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-        {
-            y_angle = fmodf(y_angle + step,  2*M_PI);
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+            y_angle = fmodf(y_angle + step, 2 * M_PI);
         }
 
         renderer.clear();
@@ -103,14 +89,14 @@ int main() {
         // timer.restart();
 
         scene.setScene({&a, &a, &a, &a, &a, &a, &a, &a}, {
-                 {{0, -0.5, 0}, {0, y_angle, 0}, {1, 1, 1}, {255, 0, 0}}
-                ,{{0, -0.5, 0}, {0, y_angle + M_PI/2, 0}, {1, 1, 1}, {0, 255, 0}}
-                ,{{0, -0.5, 0}, {0, y_angle + M_PI, 0}, {1, 1, 1}, {0, 0, 255}}
-                ,{{0, -0.5, 0}, {0, y_angle - M_PI/2, 0}, {1, 1, 1}, {255, 255, 255}}
-                ,{{0, -0.5, 0}, {M_PI, y_angle, 0}, {1, 1, 1}, {255, 0, 0}}
-                ,{{0, -0.5, 0}, {M_PI, y_angle + M_PI/2, 0}, {1, 1, 1}, {0, 255, 0}}
-                ,{{0, -0.5, 0}, {M_PI, y_angle + M_PI, 0}, {1, 1, 1}, {0, 0, 255}}
-                ,{{0, -0.5, 0}, {M_PI, y_angle - M_PI/2, 0}, {1, 1, 1}, {255, 255, 255}}
+                {{0, -0.5, 0}, {0,    y_angle,            0}, {1, 1, 1}, {255, 0,   0}},
+                {{0, -0.5, 0}, {0,    y_angle + M_PI / 2, 0}, {1, 1, 1}, {0,   255, 0}},
+                {{0, -0.5, 0}, {0,    y_angle + M_PI,     0}, {1, 1, 1}, {0,   0,   255}},
+                {{0, -0.5, 0}, {0,    y_angle - M_PI / 2, 0}, {1, 1, 1}, {255, 255, 255}},
+                {{0, -0.5, 0}, {M_PI, y_angle,            0}, {1, 1, 1}, {255, 0,   0}},
+                {{0, -0.5, 0}, {M_PI, y_angle + M_PI / 2, 0}, {1, 1, 1}, {0,   255, 0}},
+                {{0, -0.5, 0}, {M_PI, y_angle + M_PI,     0}, {1, 1, 1}, {0,   0,   255}},
+                {{0, -0.5, 0}, {M_PI, y_angle - M_PI / 2, 0}, {1, 1, 1}, {255, 255, 255}}
         });
 
         // camera.position.z() = 3 + r_angle;
@@ -123,10 +109,10 @@ int main() {
         for (int i = H - 1; i >= 0; --i) {
             for (int j = 0; j < W; ++j) {
                 auto pix = res(j, i);
-                pixels[4*((H-1 - i)*W + j)] = pix[0];
-                pixels[4*((H-1 - i)*W + j)+1] = pix[1];
-                pixels[4*((H-1 - i)*W + j)+2] = pix[2];
-                pixels[4*((H-1 - i)*W + j)+3] = 255;
+                pixels[4 * ((H - 1 - i) * W + j)] = pix[0];
+                pixels[4 * ((H - 1 - i) * W + j) + 1] = pix[1];
+                pixels[4 * ((H - 1 - i) * W + j) + 2] = pix[2];
+                pixels[4 * ((H - 1 - i) * W + j) + 3] = 255;
             }
         }
 
