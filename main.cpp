@@ -57,10 +57,10 @@ int main() {
             camera.position.y() -= step;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::PageUp)) {
-            camera.position.z() -= step;
+            camera.position += camera.get_direction() * step;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::PageDown)) {
-            camera.position.z() += step;
+            camera.position -= camera.get_direction() * step;
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad4)) {

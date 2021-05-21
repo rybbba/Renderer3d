@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Eigen/Core"
+#include <Eigen/Geometry>
 
 namespace Renderer3d {
 
@@ -11,6 +12,14 @@ struct Camera {
 
     Vector3f position = {0, 0, 0};
     Vector3f angle = {0, 0, 0};
+
+    Vector3f get_direction() {
+        Vector3f direction{0, 0, -1};
+        direction = AngleAxisf(angle.x(), Vector3f::UnitX()) * direction;
+        direction = AngleAxisf(angle.y(), Vector3f::UnitY()) * direction;
+        direction = AngleAxisf(angle.z(), Vector3f::UnitZ()) * direction;
+        return direction;
+    }
 };
 
 }  // namespace Renderer3d
