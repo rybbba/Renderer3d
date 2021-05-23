@@ -100,8 +100,8 @@ std::vector<Triangle> clip_z(const Triangle &triangle, float near_z, float far_z
     size_t p_size = points.size();
 
     std::vector<Triangle> ans;
-    for (size_t i = 0; i + 1 < p_size; i += 2) {
-        ans.emplace_back(points[i], points[i + 1], points[(i + 2) % p_size]);
+    for (size_t i = 1; i + 1 < p_size; i += 1) {
+        ans.emplace_back(points[0], points[i], points[i + 1]);
     }
 
     return ans;
@@ -114,10 +114,7 @@ Screen &Renderer::render(const Scene &scene) {
     Matrix<float, 4, 4> proj{
             {2 * cam.n / (cam.r - cam.l), 0,                           (cam.r + cam.l) / (cam.r - cam.l),  0},
             {0,                           2 * cam.n / (cam.t - cam.b), (cam.t + cam.b) / (cam.t - cam.b),  0},
-            {0,                           0,                           -(cam.f + cam.n) / (cam.f - cam.n), -2 * cam.n *
-                                                                                                           cam.f /
-                                                                                                           (cam.f -
-                                                                                                            cam.n)},
+            {0,                           0,                           -(cam.f + cam.n) / (cam.f - cam.n), -2 * cam.n * cam.f / (cam.f - cam.n)},
             {0,                           0,                           -1,                                 0}
     };
 
