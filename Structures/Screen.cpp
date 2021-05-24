@@ -2,31 +2,31 @@
 
 namespace Renderer3d {
 
-Screen::Screen(Index w, Index h) : width(w), height(h) {
+Screen::Screen(Eigen::Index w, Eigen::Index h) : width(w), height(h) {
     canvas.resize(w, h);
 }
 
-Array3i &Screen::operator()(Index i, Index j) {
+Eigen::Array3i &Screen::operator()(Eigen::Index i, Eigen::Index j) {
     return canvas(i, j);
 }
 
-Index Screen::get_w() const {
+Eigen::Index Screen::get_w() const {
     return width;
 }
 
-Index Screen::get_h() const {
+Eigen::Index Screen::get_h() const {
     return height;
 }
 
-Array2<Index> Screen::shape() const {
+Eigen::Array2<Eigen::Index> Screen::shape() const {
     return {width, height};
 }
 
 void Screen::clear() {
-    canvas.setConstant(Array3i::Zero());
+    canvas.setConstant(Eigen::Array3i::Zero());
 }
 
-void Screen::setImage(const ArrayXX<Array3i> &image) {
+void Screen::setImage(const Eigen::ArrayXX<Eigen::Array3i> &image) {
     canvas = image;
 }
 

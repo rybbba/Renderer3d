@@ -2,28 +2,27 @@
 
 #include "Eigen/Core"
 
-using namespace Eigen;
 
 namespace Renderer3d {
 
 class Screen {
 public:
-    Screen(Index w, Index h);
+    Screen(Eigen::Index w, Eigen::Index h);
 
-    Array3i &operator()(Index i, Index j);
+    Eigen::Array3i &operator()(Eigen::Index i, Eigen::Index j);
 
-    [[nodiscard]] Index get_w() const;
+    [[nodiscard]] Eigen::Index get_w() const;
 
-    [[nodiscard]] Index get_h() const;
+    [[nodiscard]] Eigen::Index get_h() const;
 
-    [[nodiscard]] Array2<Index> shape() const;
+    [[nodiscard]] Eigen::Array2<Eigen::Index> shape() const;
 
     void clear();
-    void setImage(const ArrayXX<Array3i> &image);
+    void setImage(const Eigen::ArrayXX<Eigen::Array3i> &image);
 
 private:
-    Index width, height;
-    Matrix<Array3i, Dynamic, Dynamic, RowMajor> canvas;
+    Eigen::Index width, height;
+    Eigen::Matrix<Eigen::Array3i, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> canvas;
 };
 
 }  // namespace Renderer3d

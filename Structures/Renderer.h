@@ -17,12 +17,12 @@ public:
     void clearScreen();
 
 private:
-    void draw_triangle(const Array3<Vector3f> &p, const Array3i &color);
+    void draw_triangle(const Eigen::Array3<Eigen::Vector3f> &p, const Eigen::Array3i &color);
 
     Screen &screen;
 
-    Index width, height;
-    ArrayXXd z_buf;
+    Eigen::Index width, height;
+    Eigen::ArrayXXd z_buf;
 };
 
 }  // namespace Renderer3d

@@ -12,13 +12,13 @@ Renderer::Renderer(Screen &out) : screen(out) {
     z_buf.resize(width, height);
 }
 
-float cross2(const Vector2f &a, const Vector2f &b) {
+float cross2(const Eigen::Vector2f &a, const Eigen::Vector2f &b) {
     return a.x() * b.y() - a.y() * b.x();
 }
 
-void Renderer::draw_triangle(const Array3<Vector3f> &p, const Array3i &color) {
-    Array3<Vector2f> flat_p;
-    Array3f z;
+void Renderer::draw_triangle(const Eigen::Array3<Eigen::Vector3f> &p, const Eigen::Array3i &color) {
+    Eigen::Array3<Eigen::Vector2f> flat_p;
+    Eigen::Array3f z;
     for (int i = 0; i < 3; ++i) {
         flat_p[i] = p[i].head(2);
         z[i] = p[i].z();
@@ -29,11 +29,11 @@ void Renderer::draw_triangle(const Array3<Vector3f> &p, const Array3i &color) {
 
     for (int x = 0; x < width; ++x) {
         for (int y = 0; y < height; ++y) {
-            Vector2f coords = {(float) x + 0.5, (float) y + 0.5};
+            Eigen::Vector2f coords = {(float) x + 0.5, (float) y + 0.5};
 
             float pbc2 = cross2(flat_p[1] - coords, flat_p[2] - coords);
             float pca2 = cross2(flat_p[2] - coords, flat_p[0] - coords);
-            Array3f bari;
+            Eigen::Array3f bari;
             bari[0] = pbc2 / abc2;
             bari[1] = pca2 / abc2;
             bari[2] = 1 - bari[0] - bari[1];
@@ -54,9 +54,9 @@ void Renderer::draw_triangle(const Array3<Vector3f> &p, const Array3i &color) {
     }
 }
 
-Vector4f inter_z(Vector4f now, Vector4f next, float z) {
+Eigen::Vector4f inter_z(Eigen::Vector4f now, Eigen::Vector4f next, float z) {
     if ((now.z() < z && next.z() > z) || (now.z() > z && next.z() < z)) {
-        Vector4f v = next - now;
+        Eigen::Vector4f v = next - now;
         v = now + v * (z - now.z()) / v.z();
         return v;
     }
@@ -65,11 +65,11 @@ Vector4f inter_z(Vector4f now, Vector4f next, float z) {
 
 std::vector<Triangle> clip_z(const Triangle &triangle, float near_z, float far_z) {
 
-    std::vector<Vector4f> points;
+    std::vector<Eigen::Vector4f> points;
 
     for (int i = 0; i < 3; ++i) {
-        Vector4f now = triangle.points.col(i);
-        Vector4f next = triangle.points.col((i + 1) % 3);
+        Eigen::Vector4f now = triangle.points.col(i);
+        Eigen::Vector4f next = triangle.points.col((i + 1) % 3);
 
         if (near_z > now.z() && now.z() > far_z) {
             points.emplace_back(now);
@@ -108,7 +108,7 @@ Screen &Renderer::render(const Scene &scene) {
     const auto &objects = scene.getObjects();
     const auto &properties = scene.getProperties();
     const auto &cam = scene.getCamera();
-    Matrix<float, 4, 4> proj{
+    Eigen::Matrix<float, 4, 4> proj{
             {2 * cam.n / (cam.r - cam.l), 0,                           (cam.r + cam.l) / (cam.r - cam.l),  0},
             {0,                           2 * cam.n / (cam.t - cam.b), (cam.t + cam.b) / (cam.t - cam.b),  0},
             {0,                           0,                           -(cam.f + cam.n) / (cam.f - cam.n), -2 * cam.n * cam.f / (cam.f - cam.n)},
@@ -133,10 +133,10 @@ Screen &Renderer::render(const Scene &scene) {
                     sub_triangle.points.col(i).head(3) /= sub_triangle.points(3, i);
                 }
 
-                sub_triangle.translate(Vector3f{1, 1, 0});
-                sub_triangle.scale(Vector3f{((float) width) / 2, ((float) height) / 2, 1});
+                sub_triangle.translate(Eigen::Vector3f{1, 1, 0});
+                sub_triangle.scale(Eigen::Vector3f{((float) width) / 2, ((float) height) / 2, 1});
 
-                Matrix<float, 4, 3> &global = sub_triangle.points;
+                Eigen::Matrix<float, 4, 3> &global = sub_triangle.points;
 
                 draw_triangle(
                         {global.col(0).head(3),

@@ -24,7 +24,6 @@ private:
     Properties camera_pos;
     std::vector<const Primitive *> objects;
     std::vector<Properties> properties;
-
 };
 
 }  // namespace Renderer3d

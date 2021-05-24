@@ -10,14 +10,14 @@ struct Camera {
     float l, r; // near plane left and right edges coordinates
     float b, t; // near plane bottom and top edges coordinates
 
-    Vector3f position = {0, 0, 0};
-    Vector3f angle = {0, 0, 0};
+    Eigen::Vector3f position = {0, 0, 0};
+    Eigen::Vector3f angle = {0, 0, 0};
 
-    Vector3f get_direction() {
-        Vector3f direction{0, 0, -1};
-        direction = AngleAxisf(angle.x(), Vector3f::UnitX()) * direction;
-        direction = AngleAxisf(angle.y(), Vector3f::UnitY()) * direction;
-        direction = AngleAxisf(angle.z(), Vector3f::UnitZ()) * direction;
+    Eigen::Vector3f get_direction() {
+        Eigen::Vector3f direction{0, 0, -1};
+        direction = Eigen::AngleAxisf(angle.x(), Eigen::Vector3f::UnitX()) * direction;
+        direction = Eigen::AngleAxisf(angle.y(), Eigen::Vector3f::UnitY()) * direction;
+        direction = Eigen::AngleAxisf(angle.z(), Eigen::Vector3f::UnitZ()) * direction;
         return direction;
     }
 };
