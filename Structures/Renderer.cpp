@@ -2,18 +2,14 @@
 
 namespace Renderer3d {
 
-void Renderer::clear() {
-    image.setConstant(Array3i::Zero());
-    z_buf.setConstant(2);
+void Renderer::clearScreen() {
+    screen.clear();
 }
 
 Renderer::Renderer(Screen &out) : screen(out) {
     width = screen.get_w();
     height = screen.get_h();
-    image.resize(width, height);
     z_buf.resize(width, height);
-    clear();
-
 }
 
 float cross2(const Vector2f &a, const Vector2f &b) {
@@ -37,7 +33,7 @@ void Renderer::draw_triangle(const Array3<Vector3f> &p, const Array3i &color) {
 
             float pbc2 = cross2(flat_p[1] - coords, flat_p[2] - coords);
             float pca2 = cross2(flat_p[2] - coords, flat_p[0] - coords);
-            Array3d bari;
+            Array3f bari;
             bari[0] = pbc2 / abc2;
             bari[1] = pca2 / abc2;
             bari[2] = 1 - bari[0] - bari[1];
@@ -51,7 +47,7 @@ void Renderer::draw_triangle(const Array3<Vector3f> &p, const Array3i &color) {
                 zp += z[i] * bari[i];
             }
             if (zp <= 1 && zp >= -1 && !bad && zp < z_buf(x, y)) {
-                image(x, y) = color;
+                screen(x, y) = color;
                 z_buf(x, y) = zp;
             }
         }
@@ -108,6 +104,7 @@ std::vector<Triangle> clip_z(const Triangle &triangle, float near_z, float far_z
 }
 
 Screen &Renderer::render(const Scene &scene) {
+    z_buf.setConstant(2);
     const auto &objects = scene.getObjects();
     const auto &properties = scene.getProperties();
     const auto &cam = scene.getCamera();
@@ -149,9 +146,6 @@ Screen &Renderer::render(const Scene &scene) {
             }
         }
     }
-
-    screen.setImage(image);
-
     return screen;
 }
 

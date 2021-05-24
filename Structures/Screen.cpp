@@ -22,6 +22,10 @@ Array2<Index> Screen::shape() const {
     return {width, height};
 }
 
+void Screen::clear() {
+    canvas.setConstant(Array3i::Zero());
+}
+
 void Screen::setImage(const ArrayXX<Array3i> &image) {
     canvas = image;
 }

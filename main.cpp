@@ -83,7 +83,7 @@ int main() {
             y_angle = fmodf(y_angle + step, 2 * M_PI);
         }
 
-        renderer.clear();
+        renderer.clearScreen();
 
         // r_angle = fmodf(r_angle + 1.5*timer.getElapsedTime().asSeconds(), 2*M_PI);
         // timer.restart();
@@ -119,7 +119,6 @@ int main() {
         texture.update(pixels);
         sprite.setTexture(texture);
 
-        window.clear();
         window.draw(sprite);
         window.display();
 

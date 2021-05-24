@@ -14,7 +14,7 @@ public:
 
     Screen &render(const Scene &scene);
 
-    void clear();
+    void clearScreen();
 
 private:
     void draw_triangle(const Array3<Vector3f> &p, const Array3i &color);
@@ -22,7 +22,6 @@ private:
     Screen &screen;
 
     Index width, height;
-    ArrayXX<Array3i> image;
     ArrayXXd z_buf;
 };
 

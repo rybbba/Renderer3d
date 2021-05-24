@@ -18,6 +18,7 @@ public:
 
     [[nodiscard]] Array2<Index> shape() const;
 
+    void clear();
     void setImage(const ArrayXX<Array3i> &image);
 
 private:
