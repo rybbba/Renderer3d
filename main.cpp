@@ -13,6 +13,7 @@ using namespace Renderer3d;
 int main() {
     Triangle a({1, 0, 0, 1}, {0, 1, 0, 1}, {0, 0, 1, 1});
 
+    float step = 0.03;
     const size_t W = 1000;
     const size_t H = 1000;
 
@@ -31,13 +32,20 @@ int main() {
     texture.create(W, H);
     sf::Sprite sprite;
 
-    // sf::Clock timer;
     sf::Clock fps_meter;
 
-    float step = 0.03;
-    float x_angle = 0, y_angle = 0;
 
-    // float r_angle = 0;
+    scene.setScene({&a, &a, &a, &a, &a, &a, &a, &a}, {
+            {{0, -0.5, 0}, {0,    0,         0}, {1, 1, 1}, {255, 0,   0}},
+            {{0, -0.5, 0}, {0,    M_PI / 2, 0},  {1, 1, 1}, {0,   255, 0}},
+            {{0, -0.5, 0}, {0,    M_PI,      0}, {1, 1, 1}, {0,   0,   255}},
+            {{0, -0.5, 0}, {0,    -M_PI / 2, 0}, {1, 1, 1}, {255, 255, 255}},
+            {{0, -0.5, 0}, {M_PI, 0,         0}, {1, 1, 1}, {255, 0,   0}},
+            {{0, -0.5, 0}, {M_PI, M_PI / 2, 0},  {1, 1, 1}, {0,   255, 0}},
+            {{0, -0.5, 0}, {M_PI, M_PI,      0}, {1, 1, 1}, {0,   0,   255}},
+            {{0, -0.5, 0}, {M_PI, -M_PI / 2, 0}, {1, 1, 1}, {255, 255, 255}}
+    });
+
     while (window.isOpen()) {
         sf::Event event{};
         while (window.pollEvent(event)) {
@@ -76,30 +84,8 @@ int main() {
             camera.angle.x() = fmodf(camera.angle.x() - step, 2 * M_PI);
         }
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-            y_angle = fmodf(y_angle - step, 2 * M_PI);
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-            y_angle = fmodf(y_angle + step, 2 * M_PI);
-        }
-
         renderer.clearScreen();
 
-        // r_angle = fmodf(r_angle + 1.5*timer.getElapsedTime().asSeconds(), 2*M_PI);
-        // timer.restart();
-
-        scene.setScene({&a, &a, &a, &a, &a, &a, &a, &a}, {
-                {{0, -0.5, 0}, {0,    y_angle,            0}, {1, 1, 1}, {255, 0,   0}},
-                {{0, -0.5, 0}, {0,    y_angle + M_PI / 2, 0}, {1, 1, 1}, {0,   255, 0}},
-                {{0, -0.5, 0}, {0,    y_angle + M_PI,     0}, {1, 1, 1}, {0,   0,   255}},
-                {{0, -0.5, 0}, {0,    y_angle - M_PI / 2, 0}, {1, 1, 1}, {255, 255, 255}},
-                {{0, -0.5, 0}, {M_PI, y_angle,            0}, {1, 1, 1}, {255, 0,   0}},
-                {{0, -0.5, 0}, {M_PI, y_angle + M_PI / 2, 0}, {1, 1, 1}, {0,   255, 0}},
-                {{0, -0.5, 0}, {M_PI, y_angle + M_PI,     0}, {1, 1, 1}, {0,   0,   255}},
-                {{0, -0.5, 0}, {M_PI, y_angle - M_PI / 2, 0}, {1, 1, 1}, {255, 255, 255}}
-        });
-
-        // camera.position.z() = 3 + r_angle;
         scene.setCamera(camera);
 
         renderer.render(scene);
