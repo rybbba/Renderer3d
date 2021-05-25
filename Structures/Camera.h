@@ -13,13 +13,7 @@ struct Camera {
     Eigen::Vector3f position = {0, 0, 0};
     Eigen::Vector3f angle = {0, 0, 0};
 
-    Eigen::Vector3f get_direction() {
-        Eigen::Vector3f direction{0, 0, -1};
-        direction = Eigen::AngleAxisf(angle.x(), Eigen::Vector3f::UnitX()) * direction;
-        direction = Eigen::AngleAxisf(angle.y(), Eigen::Vector3f::UnitY()) * direction;
-        direction = Eigen::AngleAxisf(angle.z(), Eigen::Vector3f::UnitZ()) * direction;
-        return direction;
-    }
+    Eigen::Vector3f get_direction();
 };
 
 }  // namespace Renderer3d

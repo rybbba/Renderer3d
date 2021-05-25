@@ -12,6 +12,7 @@ add_executable(Renderer3d main.cpp
         Structures/Primitive.cpp
         Structures/Screen.cpp
         Structures/Renderer.cpp
-        Structures/Scene.cpp)
+        Structures/Scene.cpp
+        Structures/Camera.cpp)
 
 target_link_libraries(Renderer3d sfml-graphics)
