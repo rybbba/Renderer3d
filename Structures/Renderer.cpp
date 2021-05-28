@@ -16,6 +16,41 @@ float cross2(const Eigen::Vector2f &a, const Eigen::Vector2f &b) {
     return a.x() * b.y() - a.y() * b.x();
 }
 
+// Returns y-coordinate of point on segment by x-coordinate of it and {0, false} if point can't be on segment
+std::pair<float, bool> get_segment_point_y(float x, const Eigen::Vector2f &p1, const Eigen::Vector2f &p2){
+    if ((x <= p1.x() && x <= p2.x()) || (x >= p1.x() && x >= p2.x())) {
+        return {-1, false};
+    }
+
+    float y_res = (p2.x() - x) * p1.y() + (x - p1.x()) * p2.y();
+    y_res /= p2.x() - p1.x();
+
+    return  {y_res, true};
+};
+
+std::vector<float> get_triangle_points_x(float x, const Eigen::Vector2f &p1, const Eigen::Vector2f &p2, const Eigen::Vector2f &p3) {
+    std::vector<float> res;
+    {
+        auto [y, between] = get_segment_point_y(x, p1, p2);
+        if (between) {
+            res.push_back(y);
+        }
+    }
+    {
+        auto [y, between] = get_segment_point_y(x, p1, p3);
+        if (between) {
+            res.push_back(y);
+        }
+    }
+    {
+        auto [y, between] = get_segment_point_y(x, p2, p3);
+        if (between) {
+            res.push_back(y);
+        }
+    }
+    return res;
+}
+
 void Renderer::draw_triangle(const Eigen::Array3<Eigen::Vector3f> &p, const Eigen::Array3i &color) {
     Eigen::Array3<Eigen::Vector2f> flat_p;
     Eigen::Array3f z;
@@ -25,11 +60,18 @@ void Renderer::draw_triangle(const Eigen::Array3<Eigen::Vector3f> &p, const Eige
     }
 
     float abc2 = cross2(flat_p[1] - flat_p[0], flat_p[2] - flat_p[0]);
-    if (abc2 < 0) return;
+    if (abc2 <= 0) return;
 
     for (int x = 0; x < width; ++x) {
-        for (int y = 0; y < height; ++y) {
-            Eigen::Vector2f coords = {(float) x + 0.5, (float) y + 0.5};
+        float x_real = 0.5f + (float) x;
+        auto ys = get_triangle_points_x(x_real, flat_p[0], flat_p[1], flat_p[2]);
+        if (ys.empty()) {
+            continue;
+        }
+
+        std::sort(ys.begin(), ys.end());
+        for (int y = std::max(0, (int)ys.front()); y <= std::min((int)ys.back(), (int)height - 1); ++y) {
+            Eigen::Vector2f coords = {(float) x + 0.5f, (float) y + 0.5f};
 
             float pbc2 = cross2(flat_p[1] - coords, flat_p[2] - coords);
             float pca2 = cross2(flat_p[2] - coords, flat_p[0] - coords);
