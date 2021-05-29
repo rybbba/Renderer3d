@@ -11,9 +11,7 @@ using namespace std;
 using namespace Renderer3d;
 
 int main() {
-    Triangle a({1, 0, 0, 1}, {0, 1, 0, 1}, {0, 0, 1, 1});
-
-    float step = 0.03;
+    float step = 2;
     const size_t W = 1000;
     const size_t H = 1000;
 
@@ -33,8 +31,10 @@ int main() {
     sf::Sprite sprite;
 
     sf::Clock fps_meter;
+    sf::Clock timer;
 
 
+    Triangle a({1, 0, 0, 1}, {0, 1, 0, 1}, {0, 0, 1, 1});
     scene.setScene({&a, &a, &a, &a, &a, &a, &a, &a}, {
             {{0, -0.5, 0}, {0,    0,         0}, {1, 1, 1}, {255, 0,   0}},
             {{0, -0.5, 0}, {0,    M_PI / 2, 0},  {1, 1, 1}, {0,   255, 0}},
@@ -52,36 +52,37 @@ int main() {
             if (event.type == sf::Event::Closed)
                 window.close();
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-            camera.position.x() -= step;
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-            camera.position.x() += step;
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-            camera.position.y() += step;
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-            camera.position.y() -= step;
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-            camera.position += camera.get_direction() * step;
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-            camera.position -= camera.get_direction() * step;
+
+        float step_timed  = step * timer.restart().asSeconds();
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
+            step_timed *= 2;
         }
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad4)) {
-            camera.angle.y() = fmodf(camera.angle.y() + step, 2 * M_PI);
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+            camera.position += camera.getForwardDirection() * step_timed;
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad6)) {
-            camera.angle.y() = fmodf(camera.angle.y() - step, 2 * M_PI);
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+            camera.position -= camera.getForwardDirection() * step_timed;
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad8)) {
-            camera.angle.x() = fmodf(camera.angle.x() + step, 2 * M_PI);
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+            camera.position += camera.getForwardDirection().cross(camera.getTopDirection()) * step_timed;
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad2)) {
-            camera.angle.x() = fmodf(camera.angle.x() - step, 2 * M_PI);
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+            camera.position -= camera.getForwardDirection().cross(camera.getTopDirection()) * step_timed;
+        }
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+            camera.angle.y() = fmodf(camera.angle.y() + step_timed, 2 * M_PI);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+            camera.angle.y() = fmodf(camera.angle.y() - step_timed, 2 * M_PI);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+            camera.angle.x() = fmodf(camera.angle.x() + step_timed, 2 * M_PI);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+            camera.angle.x() = fmodf(camera.angle.x() - step_timed, 2 * M_PI);
         }
 
         renderer.clearScreen();
