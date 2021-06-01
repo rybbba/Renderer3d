@@ -1,4 +1,9 @@
 cmake_minimum_required(VERSION 3.19)
+
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE)
+endif(NOT CMAKE_BUILD_TYPE)
+
 project(Renderer3d)
 
 set(CMAKE_CXX_STANDARD 20)
