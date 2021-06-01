@@ -2,98 +2,10 @@
 
 namespace Renderer3d {
 
-void Renderer::clearScreen() {
-    screen.clear();
-}
-
 Renderer::Renderer(Screen &out) : screen(out) {
     width = screen.get_w();
     height = screen.get_h();
     z_buf.resize(width, height);
-}
-
-float cross2(const Eigen::Vector2f &a, const Eigen::Vector2f &b) {
-    return a.x() * b.y() - a.y() * b.x();
-}
-
-// Returns y-coordinate of point on segment by x-coordinate of it and {0, false} if point can't be on segment
-std::pair<float, bool> get_segment_point_y(float x, const Eigen::Vector2f &p1, const Eigen::Vector2f &p2){
-    if ((x <= p1.x() && x <= p2.x()) || (x >= p1.x() && x >= p2.x())) {
-        return {-1, false};
-    }
-
-    float y_res = (p2.x() - x) * p1.y() + (x - p1.x()) * p2.y();
-    y_res /= p2.x() - p1.x();
-
-    return  {y_res, true};
-};
-
-std::vector<float> get_triangle_points_x(float x, const Eigen::Vector2f &p1, const Eigen::Vector2f &p2, const Eigen::Vector2f &p3) {
-    std::vector<float> res;
-    {
-        auto [y, between] = get_segment_point_y(x, p1, p2);
-        if (between) {
-            res.push_back(y);
-        }
-    }
-    {
-        auto [y, between] = get_segment_point_y(x, p1, p3);
-        if (between) {
-            res.push_back(y);
-        }
-    }
-    {
-        auto [y, between] = get_segment_point_y(x, p2, p3);
-        if (between) {
-            res.push_back(y);
-        }
-    }
-    return res;
-}
-
-void Renderer::draw_triangle(const Eigen::Array3<Eigen::Vector3f> &p, const Eigen::Array3i &color) {
-    Eigen::Array3<Eigen::Vector2f> flat_p;
-    Eigen::Array3f z;
-    for (int i = 0; i < 3; ++i) {
-        flat_p[i] = p[i].head(2);
-        z[i] = p[i].z();
-    }
-
-    float abc2 = cross2(flat_p[1] - flat_p[0], flat_p[2] - flat_p[0]);
-    if (abc2 <= 0) return;
-
-    for (int x = 0; x < width; ++x) {
-        float x_real = 0.5f + (float) x;
-        auto ys = get_triangle_points_x(x_real, flat_p[0], flat_p[1], flat_p[2]);
-        if (ys.empty()) {
-            continue;
-        }
-
-        std::sort(ys.begin(), ys.end());
-        for (int y = std::max(0, (int)ys.front()); y <= std::min((int)ys.back(), (int)height - 1); ++y) {
-            Eigen::Vector2f coords = {(float) x + 0.5f, (float) y + 0.5f};
-
-            float pbc2 = cross2(flat_p[1] - coords, flat_p[2] - coords);
-            float pca2 = cross2(flat_p[2] - coords, flat_p[0] - coords);
-            Eigen::Array3f bari;
-            bari[0] = pbc2 / abc2;
-            bari[1] = pca2 / abc2;
-            bari[2] = 1 - bari[0] - bari[1];
-
-            float zp = 0;
-            bool bad = false;
-            for (int i = 0; i < 3; ++i) {
-                if (bari[i] < 0) {
-                    bad = true;
-                }
-                zp += z[i] * bari[i];
-            }
-            if (zp <= 1 && zp >= -1 && !bad && zp < z_buf(x, y)) {
-                screen(x, y) = color;
-                z_buf(x, y) = zp;
-            }
-        }
-    }
 }
 
 Eigen::Vector4f inter_z(Eigen::Vector4f now, Eigen::Vector4f next, float z) {
@@ -189,6 +101,94 @@ Screen &Renderer::render(const Scene &scene) {
         }
     }
     return screen;
+}
+
+void Renderer::clearScreen() {
+    screen.clear();
+}
+
+float cross2(const Eigen::Vector2f &a, const Eigen::Vector2f &b) {
+    return a.x() * b.y() - a.y() * b.x();
+}
+
+// Returns y-coordinate of point on segment by x-coordinate of it and {0, false} if point can't be on segment
+std::pair<float, bool> get_segment_point_y(float x, const Eigen::Vector2f &p1, const Eigen::Vector2f &p2){
+    if ((x <= p1.x() && x <= p2.x()) || (x >= p1.x() && x >= p2.x())) {
+        return {-1, false};
+    }
+
+    float y_res = (p2.x() - x) * p1.y() + (x - p1.x()) * p2.y();
+    y_res /= p2.x() - p1.x();
+
+    return  {y_res, true};
+};
+
+std::vector<float> get_triangle_points_x(float x, const Eigen::Vector2f &p1, const Eigen::Vector2f &p2, const Eigen::Vector2f &p3) {
+    std::vector<float> res;
+    {
+        auto [y, between] = get_segment_point_y(x, p1, p2);
+        if (between) {
+            res.push_back(y);
+        }
+    }
+    {
+        auto [y, between] = get_segment_point_y(x, p1, p3);
+        if (between) {
+            res.push_back(y);
+        }
+    }
+    {
+        auto [y, between] = get_segment_point_y(x, p2, p3);
+        if (between) {
+            res.push_back(y);
+        }
+    }
+    return res;
+}
+
+void Renderer::draw_triangle(const Eigen::Array3<Eigen::Vector3f> &p, const Eigen::Array3i &color) {
+    Eigen::Array3<Eigen::Vector2f> flat_p;
+    Eigen::Array3f z;
+    for (int i = 0; i < 3; ++i) {
+        flat_p[i] = p[i].head(2);
+        z[i] = p[i].z();
+    }
+
+    float abc2 = cross2(flat_p[1] - flat_p[0], flat_p[2] - flat_p[0]);
+    if (abc2 <= 0) return;
+
+    for (int x = 0; x < width; ++x) {
+        float x_real = 0.5f + (float) x;
+        auto ys = get_triangle_points_x(x_real, flat_p[0], flat_p[1], flat_p[2]);
+        if (ys.empty()) {
+            continue;
+        }
+
+        std::sort(ys.begin(), ys.end());
+        for (int y = std::max(0, (int)ys.front()); y <= std::min((int)ys.back(), (int)height - 1); ++y) {
+            Eigen::Vector2f coords = {(float) x + 0.5f, (float) y + 0.5f};
+
+            float pbc2 = cross2(flat_p[1] - coords, flat_p[2] - coords);
+            float pca2 = cross2(flat_p[2] - coords, flat_p[0] - coords);
+            Eigen::Array3f bari;
+            bari[0] = pbc2 / abc2;
+            bari[1] = pca2 / abc2;
+            bari[2] = 1 - bari[0] - bari[1];
+
+            float zp = 0;
+            bool bad = false;
+            for (int i = 0; i < 3; ++i) {
+                if (bari[i] < 0) {
+                    bad = true;
+                }
+                zp += z[i] * bari[i];
+            }
+            if (zp <= 1 && zp >= -1 && !bad && zp < z_buf(x, y)) {
+                screen(x, y) = color;
+                z_buf(x, y) = zp;
+            }
+        }
+    }
 }
 
 }  // namespace Renderer3d

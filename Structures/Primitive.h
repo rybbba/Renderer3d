@@ -16,6 +16,8 @@ struct Properties {
 struct Triangle;
 
 struct Primitive {
+    [[nodiscard]] virtual std::vector<Triangle> simplify() const = 0;
+
     virtual void translate(const Eigen::Vector3f &pos) = 0;
 
     virtual void rotateX(float angle) = 0;
@@ -29,13 +31,13 @@ struct Primitive {
     virtual void transform(const Eigen::Matrix4f &m) = 0;
 
     virtual void scale(const Eigen::Vector3f &coefficients) = 0;
-
-    [[nodiscard]] virtual std::vector<Triangle> simplify() const = 0;
 };
 
 
 struct Triangle : Primitive {
     Triangle(const Eigen::Vector4f &p1, const Eigen::Vector4f &p2, const Eigen::Vector4f &p3);
+
+    [[nodiscard]] std::vector<Triangle> simplify() const override;
 
     void translate(const Eigen::Vector3f &pos) override;
 
@@ -51,8 +53,6 @@ struct Triangle : Primitive {
     void transform(const Eigen::Matrix4f &m) override;
 
     void scale(const Eigen::Vector3f &coefficients) override;
-
-    [[nodiscard]] std::vector<Triangle> simplify() const override;
 
     Eigen::Matrix<float, 4, 3> points;
 };
