@@ -15,6 +15,16 @@ int main() {
     const size_t W = 1000;
     const size_t H = 1000;
 
+    sf::Font font;
+    if (!font.loadFromFile("../fonts/font_main.ttf")) {
+        cout << "Cannot load font";
+        return 1;
+    }
+    sf::Text text_info;
+    text_info.setFont(font);
+    text_info.setCharacterSize(24);
+    text_info.setFillColor(sf::Color::White);
+
     Screen res(W, H);
 
     Scene scene;
@@ -22,7 +32,6 @@ int main() {
     Camera camera{0.001, 100, -0.001, 0.001, -0.001, 0.001, {0, 0, 3}, {0, 0, 0}};
 
     Renderer renderer(res);
-
 
     sf::RenderWindow window(sf::VideoMode(W, H), "3d render");
 
@@ -33,18 +42,41 @@ int main() {
     sf::Clock fps_meter;
     sf::Clock timer;
 
+    vector<const Primitive *> objects;
+    vector<Properties> properties;
 
     Triangle a({1, 0, 0, 1}, {0, 1, 0, 1}, {0, 0, 1, 1});
-    scene.setScene({&a, &a, &a, &a, &a, &a, &a, &a}, {
-            {{0, -0.5, 0}, {0,    0,         0}, {1, 1, 1}, {255, 0,   0}},
-            {{0, -0.5, 0}, {0,    M_PI / 2, 0},  {1, 1, 1}, {0,   255, 0}},
-            {{0, -0.5, 0}, {0,    M_PI,      0}, {1, 1, 1}, {0,   0,   255}},
-            {{0, -0.5, 0}, {0,    -M_PI / 2, 0}, {1, 1, 1}, {255, 255, 255}},
-            {{0, -0.5, 0}, {M_PI, 0,         0}, {1, 1, 1}, {255, 0,   0}},
-            {{0, -0.5, 0}, {M_PI, M_PI / 2, 0},  {1, 1, 1}, {0,   255, 0}},
-            {{0, -0.5, 0}, {M_PI, M_PI,      0}, {1, 1, 1}, {0,   0,   255}},
-            {{0, -0.5, 0}, {M_PI, -M_PI / 2, 0}, {1, 1, 1}, {255, 255, 255}}
-    });
+    for (int z = -6; z <= 6; z += 2) {
+        for (int x = -6; x <= 6; x += 2) {
+            auto x_r = (float) x;
+            auto z_r = (float) z;
+
+            objects.push_back(&a);
+            objects.push_back(&a);
+            objects.push_back(&a);
+            objects.push_back(&a);
+            properties.push_back({{x_r, -0.5, z_r}, {0, 0, 0}, {1, 1, 1}, {255, 0, 0}});
+            properties.push_back({{x_r, -0.5, z_r}, {0, M_PI / 2, 0}, {1, 1, 1}, {0, 255, 0}});
+            properties.push_back({{x_r, -0.5, z_r}, {0, M_PI, 0}, {1, 1, 1}, {0, 0, 255}});
+            properties.push_back({{x_r, -0.5, z_r}, {0, -M_PI / 2, 0}, {1, 1, 1}, {255, 255, 255}});
+        }
+    }
+    for (int z = -5; z <= 5; z += 2) {
+        for (int x = -5; x <= 5; x += 2) {
+            auto x_r = (float) x;
+            auto z_r = (float) z;
+
+            objects.push_back(&a);
+            objects.push_back(&a);
+            objects.push_back(&a);
+            objects.push_back(&a);
+            properties.push_back({{x_r, -0.5, z_r}, {0, 0, 0}, {1, 1, 1}, {255, 0, 0}});
+            properties.push_back({{x_r, -0.5, z_r}, {0, M_PI / 2, 0}, {1, 1, 1}, {0, 255, 0}});
+            properties.push_back({{x_r, -0.5, z_r}, {0, M_PI, 0}, {1, 1, 1}, {0, 0, 255}});
+            properties.push_back({{x_r, -0.5, z_r}, {0, -M_PI / 2, 0}, {1, 1, 1}, {255, 255, 255}});
+        }
+    }
+    scene.setScene(objects, properties);
 
     while (window.isOpen()) {
         sf::Event event{};
@@ -107,9 +139,15 @@ int main() {
         sprite.setTexture(texture);
 
         window.draw(sprite);
+
+        std::ostringstream stringStream_info;
+        stringStream_info << "FPS: " << 1.f / fps_meter.restart().asSeconds() << "\n";
+        stringStream_info << "Objects on scene: " << objects.size();
+        text_info.setString(stringStream_info.str());
+        window.draw(text_info);
+
         window.display();
 
-        cout << "FPS:" << 1.f / fps_meter.restart().asSeconds() << "\n";
     }
 
     return 0;
