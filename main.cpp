@@ -42,41 +42,14 @@ int main() {
     sf::Clock fps_meter;
     sf::Clock timer;
 
-    vector<const Primitive *> objects;
-    vector<Properties> properties;
 
-    Triangle a({1, 0, 0, 1}, {0, 1, 0, 1}, {0, 0, 1, 1});
-    for (int z = -6; z <= 6; z += 2) {
-        for (int x = -6; x <= 6; x += 2) {
-            auto x_r = (float) x;
-            auto z_r = (float) z;
-
-            objects.push_back(&a);
-            objects.push_back(&a);
-            objects.push_back(&a);
-            objects.push_back(&a);
-            properties.push_back({{x_r, -0.5, z_r}, {0, 0, 0}, {1, 1, 1}, {255, 0, 0}});
-            properties.push_back({{x_r, -0.5, z_r}, {0, M_PI / 2, 0}, {1, 1, 1}, {0, 255, 0}});
-            properties.push_back({{x_r, -0.5, z_r}, {0, M_PI, 0}, {1, 1, 1}, {0, 0, 255}});
-            properties.push_back({{x_r, -0.5, z_r}, {0, -M_PI / 2, 0}, {1, 1, 1}, {255, 255, 255}});
-        }
+    Triangle a({-1, -1, 0, 1}, {1, -1, 0, 1}, {0, 1, 0, 1});
+    for (int iter = 0; iter < 1000; ++iter) {
+        auto z = - (float) iter / 10;
+        scene.addObject(&a, {{0, 0, z}, {0, 0, 0}, {1, 1, 1}, {(iter % 3 == 0) ? 255 : 0, (iter % 3 == 1) ? 255 : 0, (iter % 3 == 2) ? 255 : 0}});
     }
-    for (int z = -5; z <= 5; z += 2) {
-        for (int x = -5; x <= 5; x += 2) {
-            auto x_r = (float) x;
-            auto z_r = (float) z;
 
-            objects.push_back(&a);
-            objects.push_back(&a);
-            objects.push_back(&a);
-            objects.push_back(&a);
-            properties.push_back({{x_r, -0.5, z_r}, {0, 0, 0}, {1, 1, 1}, {255, 0, 0}});
-            properties.push_back({{x_r, -0.5, z_r}, {0, M_PI / 2, 0}, {1, 1, 1}, {0, 255, 0}});
-            properties.push_back({{x_r, -0.5, z_r}, {0, M_PI, 0}, {1, 1, 1}, {0, 0, 255}});
-            properties.push_back({{x_r, -0.5, z_r}, {0, -M_PI / 2, 0}, {1, 1, 1}, {255, 255, 255}});
-        }
-    }
-    scene.setScene(objects, properties);
+    auto triangles_count = scene.countTriangles();
 
     while (window.isOpen()) {
         sf::Event event{};
@@ -142,7 +115,7 @@ int main() {
 
         std::ostringstream stringStream_info;
         stringStream_info << "FPS: " << 1.f / fps_meter.restart().asSeconds() << "\n";
-        stringStream_info << "Objects on scene: " << objects.size();
+        stringStream_info << "Triangles on scene: " << triangles_count;
         text_info.setString(stringStream_info.str());
         window.draw(text_info);
 

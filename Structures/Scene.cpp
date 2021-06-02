@@ -2,25 +2,51 @@
 
 namespace Renderer3d {
 
-void Scene::setScene(const std::vector<const Primitive *> &obj, const std::vector<Properties> &prop) {
-    objects = obj;
-    properties = prop;
+void Scene::addObject(const Primitive *primitive, const Properties &properties) {
+    objects.push_back({});
+    auto &obj = objects.back();
+
+    obj.properties = properties;
+
+    obj.end_iterator = triangles.begin();
+    for (auto &triangle : primitive->simplify()) {
+        triangles.push_front(triangle);
+    }
+    obj.begin_iterator = triangles.begin();
+}
+
+void Scene::addObject(const std::vector<Triangle> &object_new, const Properties &properties) {
+    objects.push_back({});
+    auto &obj = objects.back();
+
+    obj.properties = properties;
+
+    obj.end_iterator = triangles.begin();
+    for (auto &triangle : object_new) {
+        triangles.push_front(triangle);
+    }
+    obj.begin_iterator = triangles.begin();
+}
+
+void Scene::clear() {
+    objects.clear();
+    triangles.clear();
 }
 
 void Scene::setCamera(const Camera &cam) {
     camera = cam;
 }
 
-const std::vector<const Primitive *> &Scene::getObjects() const {
+const std::vector<Entity> &Scene::getObjects() const {
     return objects;
-}
-
-const std::vector<Properties> &Scene::getProperties() const {
-    return properties;
 }
 
 const Camera &Scene::getCamera() const {
     return camera;
+}
+
+size_t Scene::countTriangles() const {
+    return triangles.size();
 }
 
 }  // namespace Renderer3d

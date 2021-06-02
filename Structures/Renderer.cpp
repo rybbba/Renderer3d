@@ -60,7 +60,6 @@ std::vector<Triangle> clip_z(const Triangle &triangle, float near_z, float far_z
 Screen &Renderer::render(const Scene &scene) {
     z_buf.setConstant(2);
     const auto &objects = scene.getObjects();
-    const auto &properties = scene.getProperties();
     const auto &cam = scene.getCamera();
     Eigen::Matrix<float, 4, 4> proj{
             {2 * cam.n / (cam.r - cam.l), 0,                           (cam.r + cam.l) / (cam.r - cam.l),  0},
@@ -69,12 +68,11 @@ Screen &Renderer::render(const Scene &scene) {
             {0,                           0,                           -1,                                 0}
     };
 
-    for (int ind = 0; ind < objects.size(); ++ind) {
-        std::vector<Triangle> triangles = objects[ind]->simplify();
-        for (auto &triangle : triangles) {
-            triangle.scale(properties[ind].scale);
-            triangle.rotate(properties[ind].angle);
-            triangle.translate(properties[ind].coordinates);
+    for (auto &object : objects) {
+        for (auto triangle : object) {
+            triangle.scale(object.properties.scale);
+            triangle.rotate(object.properties.angle);
+            triangle.translate(object.properties.coordinates);
 
             triangle.translate(-cam.position);
             triangle.rotateZ(-cam.angle.z());
@@ -96,7 +94,7 @@ Screen &Renderer::render(const Scene &scene) {
                         {global.col(0).head(3),
                          global.col(1).head(3),
                          global.col(2).head(3)},
-                        properties[ind].color);
+                        object.properties.color);
             }
         }
     }
