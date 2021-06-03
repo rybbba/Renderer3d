@@ -8,6 +8,8 @@ project(Renderer3d)
 
 set(CMAKE_CXX_STANDARD 20)
 
+set(SFML_BUILD_AUDIO OFF)
+set(SFML_BUILD_NETWORK OFF)
 add_subdirectory(lib/SFML)
 
 include_directories(lib/eigen)
