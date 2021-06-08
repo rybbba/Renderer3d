@@ -22,7 +22,7 @@ private:
     Screen &screen;
 
     Eigen::Index width, height;
-    Eigen::ArrayXXd z_buf;
+    Eigen::ArrayXXf z_buf;
 };
 
 }  // namespace Renderer3d
